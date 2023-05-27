@@ -62,8 +62,6 @@ const userId = useCookie('movie-schedule-user-id', { path: '/' }, { maxAge: 60 *
              }else{
                 router.push('/user')
              }
-
-
              setUser(result.data.login)
 
          }
@@ -80,11 +78,8 @@ const userId = useCookie('movie-schedule-user-id', { path: '/' }, { maxAge: 60 *
         
      });
  } 
-// give time to token if it is not expired then fetch user data by id
-
 
  </script>
- 
  <template>
  <div class="login pt-16">
      <base-dialog :show="someThingWrong" @close="someThingWrong = false" title="Some thing Went Wrong"></base-dialog>

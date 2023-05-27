@@ -23,15 +23,13 @@ onError((error) => {
 const headers = ['FirstName', 'LastName','Number of Movie', 'Action 1', 'Action 2']
 </script>
 <template>
-    <!-- Table Container -->
     <BaseDialog :show="!!serverError.error" :title="serverError.message" @close="serverError.error = false">
-        Please check your internet connection and try again
-    </BaseDialog>
-    <BaseSpinner v-if="loading && !directors"></BaseSpinner>
-    <div v-if="!loading && !serverError.error">
-        <LayoutSubHeader name="directors"></LayoutSubHeader>
-        <BaseTable :headers="headers">
-            <AdminDirectorsItem  v-for="director in directors" :key="director.id" :director="director"/>
-        </BaseTable>        
-    </div>
+       Please check your internet connection and try again
+   </BaseDialog>
+   <BaseSpinner v-if="loading"></BaseSpinner>
+   <LayoutSubHeader name="directors"></LayoutSubHeader>
+
+   <div v-if="!loading && !serverError.error">
+       <AdminActorsAndDirectorList :items="directors"></AdminActorsAndDirectorList>
+   </div>
 </template>

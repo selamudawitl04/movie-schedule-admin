@@ -61,9 +61,7 @@ const handleAddMovie = () => {
 
     }
   }
-
   console.log(variabless, 'variabless')
-
   return 
   const {mutate, onDone, onError, loading} = uploadImage();
 
@@ -161,11 +159,12 @@ const handleAddMovie = () => {
                 </div>
                 <div class=" flex flex-col space-y-6">
                     <!-- Set director to movie -->
-                    <DirectorsSet @set-director="setDirector"></DirectorsSet>                    
+                    <DirectorsSet ></DirectorsSet> 
+                    <AdminMoviesAddMovieSetDirector @set-director="setDirector"></AdminMoviesAddMovieSetDirector>                   
                     <!-- Upload  movie Images -->
                     <ImagesMultiUpload/>
                      <!--Set  Actors to Movie -->
-                    <ActorsSet></ActorsSet>   
+                    <AdminMoviesAddMovieSetActor></AdminMoviesAddMovieSetActor>   
                 </div>
             </div>
             <button class=" font-bold text-white bg-yellow-bright  w-80 my-10 mx-auto block rounded-full p-2">Submit</button>
