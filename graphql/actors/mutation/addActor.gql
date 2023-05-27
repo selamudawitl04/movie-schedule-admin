@@ -1,0 +1,9 @@
+mutation addActor($data: actors_insert_input!) {
+  insert_actors_one(object: $data) {
+    first_name
+    id
+    last_name
+    image_id
+  }
+}
+

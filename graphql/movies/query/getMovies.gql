@@ -1,0 +1,27 @@
+query getMovies {
+  movies {
+    date
+    director {
+      first_name
+      id
+      last_name
+      image {
+        url
+      }
+    }
+    image{
+      id
+      url
+    }
+    discrption
+    duration
+    id
+    title
+    movies_generes {
+      genere {
+        name
+        id
+      }
+    }
+  }
+}

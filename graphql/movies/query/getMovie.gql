@@ -1,0 +1,45 @@
+query MyQuery($id : uuid!) {
+  movies_by_pk(id: $id) {
+    date
+    director {
+      first_name
+      id
+      last_name
+      image {
+        id
+        url
+      }
+    }
+    title
+    discrption
+    duration
+    id
+    image {
+      id
+      url
+    }
+    movies_images {
+      image {
+        id
+        url
+      }
+    }
+    movies_actors {
+      actor {
+        first_name
+        id
+        last_name
+        image {
+          id
+          url
+        }
+      }
+    }
+    movies_generes {
+      genere {
+        id
+        name
+      }
+    }
+  }
+}

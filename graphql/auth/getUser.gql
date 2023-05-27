@@ -1,0 +1,13 @@
+query getUser($id : uuid!) {
+  users_by_pk(id: $id) {
+    id
+    firstName
+    lastName
+    email 
+    image{
+        id
+        url
+    }
+    role
+  }
+}

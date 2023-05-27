@@ -1,0 +1,11 @@
+query getActors {
+  actors {
+    first_name
+    id
+    last_name
+    image {
+      id
+      url
+    }
+  }
+}

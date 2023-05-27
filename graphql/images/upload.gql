@@ -1,0 +1,5 @@
+mutation uploadImages($data: imagesData!) {
+  uploadImages(arg1: $data) {
+    urls
+  }
+}

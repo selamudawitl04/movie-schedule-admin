@@ -1,0 +1,9 @@
+mutation addActor($data: directors_insert_input!) {
+  insert_directors_one(object: $data) {
+    first_name
+    id
+    last_name
+    image_id
+  }
+}
+

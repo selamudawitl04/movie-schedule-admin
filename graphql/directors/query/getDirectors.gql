@@ -1,0 +1,11 @@
+query getDirectors {
+  directors {
+    first_name
+    id
+    last_name
+    image {
+      id
+      url
+    }
+  }
+}

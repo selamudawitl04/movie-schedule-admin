@@ -1,0 +1,3 @@
+mutation unbook($id: uuid!) {
+  delete_bookings_by_pk(id: $id)
+}
