@@ -42,24 +42,30 @@ const showActors = () => {
 };
 
 // set actors to movie
-const selectedActors = ref([]);
+const props = defineProps({
+  selectedActors: {
+    type: Array,
+    required: true,
+  },
+});
+
 const setActorToMovie = (actor) => {
   showActorsList.value = false;
   if (
-    !selectedActors.value.some((selectedActor) => selectedActor.id == actor.id)
+    !props.selectedActors.some((selectedActor) => selectedActor.id == actor.id)
   ) {
-    selectedActors.value.unshift(actor);
+    props.selectedActors.unshift(actor);
     showActorsList.value = false;
-    setActor(selectedActors.value.map((actor) => actor.id));
+    setActor(props.selectedActors.map((actor) => actor.id));
 
   }
 };
 
 const unselectActor = (actor) => {
-  selectedActors.value = selectedActors.value.filter(
-    (selectedActor) => selectedActor.id != actor.id
+  props.selectedActors.splice(
+    props.selectedActors.findIndex((selectedActor) => selectedActor.id == actor.id)
   );
-  setActor(selectedActors.value.map((actor) => actor.id));
+  setActor(props.selectedActors);
 };
 </script>
 
@@ -93,7 +99,7 @@ const unselectActor = (actor) => {
     <div></div>
     <div class="my-2 grid gap-2 grid-cols-2">
       <div
-        v-for="actor in selectedActors"
+        v-for="actor in props.selectedActors"
         :key="actor"
         class="flex  items-center justify-between space-x-2 text-left bg-gray-light rounded-md px-2"
       >

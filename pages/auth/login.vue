@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import { ref, watch} from 'vue'
 import { useRouter, useRoute, onBeforeRouteLeave} from 'vue-router'
 import { useAuthStore } from '@/stores/modules/auth'
-const authToken = useCookie('auth-token',  { path: '/' }, { maxAge: 60 * 60 * 24 * 10 })
+const authToken = useCookie('auth-token',  { path: '/' }, { expires: 60 * 60 * 24 * 10 })
 // 
  const router = useRouter();
  const authStore = useAuthStore();

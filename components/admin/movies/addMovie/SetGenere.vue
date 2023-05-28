@@ -5,11 +5,20 @@ const generes = reactive([]);
 import getActors from "@/graphql/actors/query/getActors.gql";
 
 import getGeneres from "@/graphql/generes/getGeneres.gql";
-//1. load directors
+
+const props = defineProps({
+  selectedGeneres: {
+    type: Array,
+    required: true,
+  },
+});
+
+//1. load generes
 const { onResult, loading, onError, refetch } = useQuery(getGeneres, {
   fetchPolicy: "network-only",
 });
 onResult((result) => {
+  console.log(result, "result from getGeneres")
   result.data.generes.forEach((genere) => {
     generes.push(genere);
   });
@@ -20,23 +29,31 @@ onError((error) => {
 });
 
 
+
+
 const setGeneresToMovie = inject("setGeneres");
 
 const displayGenere = ref(false);
-const selectedGeneres = ref([]);
+// const props.selectedGeneres = ref([]);
 const currentGenere = ref();
 
 //  set genere to movies
 const setGenere = () => {
   // check if genere is already selected
   if (
-    selectedGeneres.value.every(
+    props.selectedGeneres.every(
       (selectedGenere) => selectedGenere.id != currentGenere.value
     )
   ) {
-    selectedGeneres.value.push(generes.find((genere) => genere.id == currentGenere.value));
-    setGeneresToMovie(selectedGeneres.value.map((genere) => genere.id));
+    props.selectedGeneres.push(generes.find((genere) => genere.id == currentGenere.value));
+    setGeneresToMovie(props.selectedGeneres);
   }
+};
+const unSetGenere = (genere) => {
+  props.selectedGeneres.splice(
+    props.selectedGeneres.findIndex((selectedGenere) => selectedGenere.id == genere.id)
+  );
+  setGeneresToMovie(props.selectedGeneres);
 };
 </script>
 
@@ -65,10 +82,10 @@ const setGenere = () => {
       <!-- <button type="button" @click="displayGenere = true" class=" rounded-full  bg-gray-dark py-1 px-2 text-white ">Add Genere</button> -->
     </div>
     <div class="flex py-2 flex-wrap">
-      <div v-for="genere in selectedGeneres" :key="genere.id" class="flex  items-start flex-wrap mr-2 mt-2" >
+      <div v-for="genere in props.selectedGeneres" :key="genere.id" class="flex  items-start flex-wrap mr-2 mt-2" >
         <div class="flex bg-gray-light p-1  rounded-md space-x-2 justify-center items-center ">
           <span class="text-sm">{{ genere.name }}</span> 
-          <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" class="text-red" viewBox="0 0 1024 1024"><path fill="currentColor" d="m563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8L295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512L196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1l216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"/></svg></span></div>
+          <span @click="unSetGenere"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" class="text-red" viewBox="0 0 1024 1024"><path fill="currentColor" d="m563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8L295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512L196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1l216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"/></svg></span></div>
       </div>
     </div>
   </div>

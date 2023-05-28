@@ -44,7 +44,6 @@ export const useAuthStore = defineStore({
         // console.log(this.user, 'from action part')
     },
     setToken(token){
-      console.log(token, 'from action part')
       this.token = token
     },
     async login(payload){

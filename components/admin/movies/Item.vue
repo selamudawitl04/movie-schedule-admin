@@ -11,6 +11,9 @@ export default{
         date(){
             const date = new Date(this.movie.date)
             return date.toISOString().split('T')[0]
+        },
+        editPageLink(){
+            return '/admin/movies/' + this.movie.id
         }
     }
 }
@@ -26,7 +29,7 @@ export default{
         <td class=" text-yellow-bright font-bold">{{ movie.duration }}</td>
         <td class=" text-primary9 font-bold">{{date}}</td>
         <td class=" text-right" >
-            <NuxtLink to="/admin/movies/editMovie" class=" ml-2.5 text-white font-bold bg-yellow-bright rounded-md px-3">Edit</NuxtLink>
+            <NuxtLink :to="editPageLink" class="p-1.5 ml-2.5 text-white font-bold bg-yellow-bright rounded-md px-3">Edit</NuxtLink>
         </td>
     </tr>
 </template>

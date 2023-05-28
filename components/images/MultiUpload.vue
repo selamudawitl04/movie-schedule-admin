@@ -1,31 +1,30 @@
 <script setup>
 // handle upload image
 // 1. set base64Images
-const variables = ref({
-  image: [],
-});
 
-const removeImage = (index) => {
-  // if (ingredients.value.length > 1) {
-  //     ingredients.value.splice(index, 1);
-  // }
-};
+const base64Images = ref([]);
+const setImages = inject("setImages");
+
+
+
+
 const mainImage = (index) => {
-  const temp = variables.value.image[index];
-  variables.value.image[index] = variables.value.image[0];
-  variables.value.image[0] = temp;
+  const temp = base64Images.value[index];
+  base64Images.value[index] = base64Images.value[0];
+  base64Images.value[0] = temp;
+  setImages(base64Images.value);
 };
 const handleImage = async () => {
   const files = document.querySelector("input[type=file]").files;
-  let images = [];
   async function readAndPreview(file) {
     // Make sure file.name matches our extensions criteria
     if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
       const reader = new FileReader();
       reader.addEventListener(
         "load",
-        function (e) {
-          variables.value.image.push(e.target.result);
+        function (file) {
+          base64Images.value.push(file.target.result);
+          setImages(base64Images.value);
         },
         false
       );
@@ -37,11 +36,13 @@ const handleImage = async () => {
       await readAndPreview(files[i]);
     }
   }
+
+
 };
 </script>
 <template>
   <div
-    v-if="variables.image.length == 0"
+    v-if="base64Images.length == 0"
     class="flex justify-center mt-5 w-full"
   >
     <div
@@ -86,13 +87,13 @@ const handleImage = async () => {
       </label>
     </div>
   </div>
-  <div v-if="variables.image.length > 0" class="w-full mb-10">
+  <div v-if="base64Images.length > 0" class="w-full mb-10">
     <div class="w-full flex justify-center">
-      <span class="font-bold">Click image to make it main</span>
+      <span class="font-bold">Click image to make it Tumnail</span>
     </div>
     <div class="md:grid md:grid-cols-3">
-      <div class="m-2" v-for="(path, index) in variables.image" :key="index">
-        <span @click="variables.image.splice(index, 1)" class="text-red-600"
+      <div class="m-2" v-for="(path, index) in base64Images" :key="index">
+        <span @click="base64Images.splice(index, 1)" class="text-red-600"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
             width="25"
@@ -123,13 +124,13 @@ const handleImage = async () => {
             v-if="index == 0"
             class="text-md font-bold rounded p-2 text-green-600"
           >
-            cover
+            Tumnail
           </div>
-          <div v-else class="text-md font rounded p-2 text-orange-600">sub</div>
+          <div v-else class="text-md font rounded p-2 text-orange-600">Detail</div>
         </div>
       </div>
       <div class="relative">
-        <label class="text-xl absolute " :class="variables.image.length%3==0?'-top-10 left-0':'top-[30%] left-[40%]'">
+        <label class="text-xl absolute " :class="base64Images.length%3==0?'-top-10 left-0':'top-[30%] left-[40%]'">
           <span class="bg-gray-300 rounded p-2"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
