@@ -1,9 +1,12 @@
 <script setup>
+import { useAuthStore } from './stores/modules/auth';
+const authStore = useAuthStore()
+authStore.autoLogin()
+
 </script>
 
 <template>
     <div>
-      <!-- Markup shared across all pages, ex: NavBar -->
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>

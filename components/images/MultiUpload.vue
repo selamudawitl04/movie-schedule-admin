@@ -1,93 +1,176 @@
 <script setup>
 // handle upload image
 // 1. set base64Images
-import { ref , reactive} from "vue";
+const variables = ref({
+  image: [],
+});
 
-
-
-const base64Images = ref([]);
-const displayImageInput = ref(true)
-let imagesAreSelected = ref(false)
-const setImageToMovie = inject('setImages')
-const setCoverImage = inject('setCoverImage')
-
-const numberOfImages = ()=> base64Images.value.length
-
-watch(numberOfImages, (newValue)=>{
-    if(newValue > 0){
-        setImageToMovie(base64Images.value)
+const removeImage = (index) => {
+  // if (ingredients.value.length > 1) {
+  //     ingredients.value.splice(index, 1);
+  // }
+};
+const mainImage = (index) => {
+  const temp = variables.value.image[index];
+  variables.value.image[index] = variables.value.image[0];
+  variables.value.image[0] = temp;
+};
+const handleImage = async () => {
+  const files = document.querySelector("input[type=file]").files;
+  let images = [];
+  async function readAndPreview(file) {
+    // Make sure file.name matches our extensions criteria
+    if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+      const reader = new FileReader();
+      reader.addEventListener(
+        "load",
+        function (e) {
+          variables.value.image.push(e.target.result);
+        },
+        false
+      );
+      reader.readAsDataURL(file);
     }
-})
-
-const setImages = async (event)=>{
-    const imageContainer = document.getElementById('image-container');
-    const files = event.target.files
-    for(let i = 0 ; i < files.length; i++){
-        // change images to base64
-
-        setTimeout(() => {
-            const reader = new FileReader()
-            reader.readAsDataURL(files[i])
-            // console.log(files[i])
-            reader.onload = () => {
-                base64Images.value.push(reader.result)
-            }
-        }, 20);
-     
-        // How to remove the tumb from base
-        //display selected image by creating temporary object url  
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(files[i]);
-        img.width = 120
-        img.id = i
-        imageContainer.appendChild(img)
-        img.addEventListener('click', chooseTumb)
+  }
+  if (files) {
+    for (var i = 0; i < files.length; i++) {
+      await readAndPreview(files[i]);
     }
-    displayImageInput.value = false
-    imagesAreSelected.value = true
-}
-
-
-// a function to choose cover image
-function chooseTumb(event) {
-    const imageElement = event.target
-    setCoverImage(imageElement.id)
-    imageElement.parentElement.childNodes.forEach((node,index)=>{
-        if(index > 0)
-            node.style.border = 'none'
-    })
-    imageElement.style.border = '4px solid #E4D804'
-}
-
-const chooseImageButton = (event)=>{
-    document.getElementById('image').click()
-    setTimeout(() => {
-        event.target.style.display = 'none'
-        
-    }, 1000);
-}
+  }
+};
 </script>
 <template>
-    <div>
-        <div class=" flex justify-between items-center">
-            <h3 class=" text-2xl font-bold text-primary9">Upload Images</h3>
-            <h3 @click="chooseImageButton" class=" opacity-70 cursor-pointer text-center  bg-yellow-bright rounded-full px-2 text-white font-bold">Upload</h3>
+  <div
+    v-if="variables.image.length == 0"
+    class="flex justify-center mt-5 w-full"
+  >
+    <div
+      class="flex basis-1/4 items-center justify-center flex-col space-y-8 w-full"
+    >
+      <div class="font-bold text-primary9">
+        Select images 
+      </div>
+      <label
+        class="flex flex-col w-full h-32 border-4 rounded-md  border-dashed hover:bg-gray-100 hover:border-gray-300"
+      >
+        <div class="flex flex-col items-center justify-center pt-7">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-12 h-12 text-gray-400 group-hover:text-gray-600"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <p
+            class="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600"
+          >
+            multiple images
+          </p>
         </div>
-        <div id="image-container" class="flex flex-wrap space-x-4">
-            <input v-show="false" class=" text-primary9" v-if="displayImageInput" multiple @change="setImages" type="file" name="" id="image">
-        </div>
-        <p v-if="imagesAreSelected" class=" text-center text-primary9">Click The Image To Make It Cover</p>
+        <input
+          @change="handleImage"
+          class="opacity-0 w-60"
+          ref="file"
+          type="file"
+          accept="image/*"
+          multiple
+          name="image"
+          id=""
+        />
+        <!-- <span class="text-red-600">{{errors.image}}</span> -->
+      </label>
     </div>
+  </div>
+  <div v-if="variables.image.length > 0" class="w-full mb-10">
+    <div class="w-full flex justify-center">
+      <span class="font-bold">Click image to make it main</span>
+    </div>
+    <div class="md:grid md:grid-cols-3">
+      <div class="m-2" v-for="(path, index) in variables.image" :key="index">
+        <span @click="variables.image.splice(index, 1)" class="text-red-600"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="25"
+            height="25"
+            viewBox="0 0 1024 1024"
+            class="text-red"
+          >
+            <path
+              fill="currentColor"
+              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372s372 166.6 372 372s-166.6 372-372 372z"
+            />
+            <path
+              fill="currentColor"
+              fill-opacity=".15"
+              d="M512 140c-205.4 0-372 166.6-372 372s166.6 372 372 372s372-166.6 372-372s-166.6-372-372-372zm171.8 527.1c1.2 1.5 1.9 3.3 1.9 5.2c0 4.5-3.6 8-8 8l-66-.3l-99.3-118.4l-99.3 118.5l-66.1.3c-4.4 0-8-3.6-8-8c0-1.9.7-3.7 1.9-5.2L471 512.3l-130.1-155a8.32 8.32 0 0 1-1.9-5.2c0-4.5 3.6-8 8-8l66.1.3l99.3 118.4l99.4-118.5l66-.3c4.4 0 8 3.6 8 8c0 1.9-.6 3.8-1.8 5.2l-130.1 155l129.9 154.9z"
+            />
+            <path
+              fill="currentColor" d="M685.8 352c0-4.4-3.6-8-8-8l-66 .3l-99.4 118.5l-99.3-118.4l-66.1-.3c-4.4 0-8 3.5-8 8c0 1.9.7 3.7 1.9 5.2l130.1 155l-130.1 154.9a8.32 8.32 0 0 0-1.9 5.2c0 4.4 3.6 8 8 8l66.1-.3l99.3-118.5L611.7 680l66 .3c4.4 0 8-3.5 8-8c0-1.9-.7-3.7-1.9-5.2L553.9 512.2l130.1-155c1.2-1.4 1.8-3.3 1.8-5.2z"
+            /></svg></span>
+        <label @click="mainImage(index)" :for="index">
+          <img
+            :src="path"
+            class="pt-1 cursor-pointer text-sm h-60 w-60 text-gray-400 max-w-full object-cover group-hover:text-gray-600"
+          />
+        </label>
+        <div class="flex justify-between pt-2 px-2">
+          <div
+            v-if="index == 0"
+            class="text-md font-bold rounded p-2 text-green-600"
+          >
+            cover
+          </div>
+          <div v-else class="text-md font rounded p-2 text-orange-600">sub</div>
+        </div>
+      </div>
+      <div class="relative">
+        <label class="text-xl absolute " :class="variables.image.length%3==0?'-top-10 left-0':'top-[30%] left-[40%]'">
+          <span class="bg-gray-300 rounded p-2"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 1024 1024"
+            >
+              <path
+                fill="currentColor"
+                d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"
+              />
+              <path
+                fill="currentColor"
+                d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372s372 166.6 372 372s-166.6 372-372 372z"
+              />
+            </svg>
+          </span>
+          <input
+            @change="handleImage"
+            class="opacity-0"
+            ref="file"
+            type="file"
+            accept="image/*"
+            multiple
+            name=""
+            id=""
+          />
+        </label>
+      </div>
+    </div>
+    <div></div>
+  </div>
 </template>
 <style scoped>
- /* Style the file input button */
- input[type="file"]::-webkit-file-upload-button {
-    background-color: #273444;
-    color: white;
-    padding: 6px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
+/* Style the file input button */
+input[type="file"]::-webkit-file-upload-button {
+  background-color: #273444;
+  color: white;
+  padding: 6px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 </style>

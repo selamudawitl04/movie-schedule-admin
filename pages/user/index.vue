@@ -13,7 +13,7 @@ console.log(user)
     <div>
         <h1 class=" text-center text-3xl font-bold">User Page</h1>
         <div class=" bg-white shadow-gray-dark flex flex-col lg:flex-row items-center justify-center space-x-14">
-            <img width="200" :src="user.image" :alt=" user.firstName + 'Image'">
+            <img width="200" :src="user.image.url" :alt=" user.firstName + 'Image'">
             <div>
                 <h1 class=" text-center text-3xl font-bold">User Information</h1>
                 <p>{{ user.firstName }}</p>

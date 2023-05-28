@@ -1,23 +1,18 @@
 <script setup>
 
 const name = useCookie('name')
-
-name.value = 'test'
-console.log(name.value)
-
 definePageMeta({
-  layout: "movies",
+  layout: "movies", 
 });
  import { Form, Field } from 'vee-validate';
 import loginMutation from '@/graphql/auth/login.gql'
 
- import * as Yup from 'yup';
- import { ref, watch} from 'vue'
- import { useRouter, useRoute, onBeforeRouteLeave} from 'vue-router'
- import { useAuthStore } from '@/stores/modules/auth'
-const authToken = useCookie('auth-token',  { path: '/' }, { maxAge: 60 * 60 * 24 * 1 })
-const userId = useCookie('movie-schedule-user-id', { path: '/' }, { maxAge: 60 * 60 * 24 * 1 })
-
+import * as Yup from 'yup';
+import { ref, watch} from 'vue'
+import { useRouter, useRoute, onBeforeRouteLeave} from 'vue-router'
+import { useAuthStore } from '@/stores/modules/auth'
+const authToken = useCookie('auth-token',  { path: '/' }, { maxAge: 60 * 60 * 24 * 10 })
+// 
  const router = useRouter();
  const authStore = useAuthStore();
  const {setUser}  = authStore;
@@ -63,6 +58,7 @@ const userId = useCookie('movie-schedule-user-id', { path: '/' }, { maxAge: 60 *
                 router.push('/user')
              }
              setUser(result.data.login)
+             authStore.token = result.data.login.token
 
          }
      });
@@ -103,16 +99,16 @@ const userId = useCookie('movie-schedule-user-id', { path: '/' }, { maxAge: 60 *
                          <Form @change="invalidCredential = false" class="space-y-5" @submit="handleLogin" :validation-schema="schema" v-slot="{ errors }">
                          <div class="space-y-2 flex flex-col">
                              <label class="text-sm font-medium text-gray-700 tracking-wide">Email *</label>
-                              <Field name="email"  v-model="variables.email" type="email" class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-bright "  placeholder="Your email" :class="{ 'border-red': errors.email }" />
+                              <Field name="email"  v-model="variables.email" type="email" class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg  focus:border-yellow-bright "  placeholder="Your email" :class="{ 'border-red': errors.email }" />
                               <transition name="error">
                                  <span class="text-red-600 text-sm" >{{errors.email}}</span>
                              </transition>
-                        </div>
+                         </div>
                          <div class="space-y-2 flex flex-col">
                              <label class=" text-sm font-medium text-gray-700 tracking-wide">
                                  Password *
                              </label>
-                              <Field name="password"  v-model="variables.password" type="password" class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg  focus:outline-none  focus:border focus:border-yellow-bright focus:border-solid "  placeholder="Your email" :class="{ 'border-red': errors.password }" />
+                              <Field name="password"  v-model="variables.password" type="password" class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg    focus:border focus:border-yellow-bright focus:border-solid "  placeholder="Your email" :class="{ 'border-red': errors.password }" />
                               <transition name="error">
                                  <span class="text-red text-sm" >{{errors.password}}</span>
                              </transition>
@@ -122,7 +118,6 @@ const userId = useCookie('movie-schedule-user-id', { path: '/' }, { maxAge: 60 *
                              <transition name="error">
                                  <p class=" text-r">Invalid Email or Password</p>
                              </transition>
- 
                          </div>
                          <div class="flex items-center justify-between space-x-7">
                              <div class="flex items-center">
@@ -140,11 +135,8 @@ const userId = useCookie('movie-schedule-user-id', { path: '/' }, { maxAge: 60 *
                          <div class="flex justify-center">
                          <button  :disabled="isloading" type="submit" :class="{'bg-yellow-orange':isloading, 'hover:bg-orange-00':isloading,}" class=" w-44 flex justify-center bg-yellow-bright  opacity-80 hover:opacity-100 text-white  p-3  rounded-full  tracking-wide font-semibold shadow-lg  cursor-pointer transition  ease-in duration-400 ">
                              Sign in
-                         <span v-if="isloading" a class=" absolute animate-spin text-9xl inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading"></span>
+                            <span v-if="isloading" a class=" absolute animate-spin text-9xl inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-white rounded-full" role="status" aria-label="loading"></span>
                          </button>
-                         <!-- <button  @click="checkAccount" type="submit" class=" w-44 flex justify-center bg-orange-400 hover:bg-orange-500 text-gray-100  p-3  rounded-full  tracking-wide font-semibold shadow-lg  cursor-pointer transition  ease-in duration-400 ">
-                             Sign in
-                         </button> -->
                          </div>
                      </Form>
                      </div>

@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import loginMutation from '@/graphql/auth/login.gql'
 const authToken = useCookie('auth-token')
+import jwt_decode from 'jwt-decode';
+import getUser from '@/graphql/auth/getUser.gql'
+import { ref } from 'vue';
 
-
-// import { useQuery, useMutation } from '~/.nuxt/imports'
-// import getMovies from '@/graphql/query/movies.gql'
 
 
 // import gql from 'graphql-tag'
@@ -16,7 +16,10 @@ export const useAuthStore = defineStore({
         email: null,
         firstName : null,
         lastName: null,
-        image: null,
+        image: {
+            url: null
+        }
+
     },
     token: null
   }),
@@ -28,88 +31,27 @@ export const useAuthStore = defineStore({
         return this.token
     },
     isLoggedIn(state){
-        return !!state.token
+      console.log(!!state.token)
+      return !!state.token
     },
     getUser(state){
         return this.user
     }
   },
-  mutations:{
-    setToken(state, token){
-        state.token = token
-    },
-    setUser(state, user){
-        if(!!state.token){
-            state.userId = id
-            
-        }else{
-            state.userId = null
-        }
-    }
-},
   actions: {
     setUser(user){
         this.user = user
         // console.log(this.user, 'from action part')
     },
-    async login(payload){
-        const data = {
-            email: payload.email,
-            password: payload.password
-        }
-        const {mutate, onDone, loading, onError } = useMutation(
-            loginMutation, {data},
-            () => ({
-              fetchPolicy: "network-only"
-            //   clientId: 'authClient'
-            })
-        );
-        console.log(mutate)
-        onDone((result) => {
-            console.log(result)
-            // check if result has value
-            if (result.value && result.value.data) {
-
-                authToken.value = 'Bearer '+ result.value.data.login.token
-                // store token on cookie and  set token
-                this.token = result.value.data.login.token
-                // delete token from user data
-                delete result.value.data.login.token 
-                // store user data
-                this.user = result.value.data.login
-                user.value = result.value.data.user  
-            }
-        });
-        onError((error) => {
-            console.log(error)
-            const err = new Error(error.message) ;
-            throw err
-        });
+    setToken(token){
+      console.log(token, 'from action part')
+      this.token = token
     },
-    async signup(variables){
-        // variables.firstName = variables.name.split(" ")[0]
-        // variables.lastName = variables.name.split(" ")[1]
-        // delete variables.name
+    async login(payload){
+      
+    },
+    async signup(payload){
         
-        // // execute signup mutation
-        // const {result, onResult, onError} = await useMutation(authMutation.signup(), variables) 
-        // onResult((result) => { 
-        //     // check if result has value
-        //     if (result.value && result.value.data) {
-        //         // store token on cookie and  set token
-        //         this.token = result.value.data.signup.token
-        //         // delete token from user data
-        //         delete result.value.data.signup.token   
-        //         // store user data  
-        //         this.user = result.value.data.signup
-        //         user.value = result.value.data.user
-        //         console.log(user.value) // Output: { id: '123', name: 'John Doe', email: 'john@example.com' }
-        //     }
-        // })
-        // onError((error) => {
-        //     const err = new Error(error.message) ;
-        //     throw err  
-        // })
     },
 
     async forgotPassword(){
@@ -117,11 +59,38 @@ export const useAuthStore = defineStore({
     async resetPassword(){
     },
     async autoLogin(){
-        // get token and user id from cookies and assign user
+        let decoded = {}
+        if(authToken.value){
+          decoded = jwt_decode(authToken.value);
+        }
+        
+        if(decoded.exp * 1000 > Date.now()){
+          const decoded = jwt_decode(authToken.value);
+          const id = decoded["https://hasura.io/jwt/claims"]["x-hasura-user-id"]
+          const { onResult, loading, onError, refetch } = useQuery(getUser, {id},
+            () => ({
+                fetchPolicy: "network-only",
+                clientId: "authClient",
+            }))
+          onResult((result) => {
+            const user = {
+              ...result.data.users_by_pk
+            }
+            user.image = result.data.users_by_pk.image.url
+            this.setUser(result.data.users_by_pk)
+            this.setToken(authToken.value)
+          })
+          onError((error) => {
+              // router.push('/error')
+              console.log(error)
+          })
+        
+        }else{
+          // console.log(555555)
+        }
     },
     logout(){
-        // delete token from cookie and set token null
-        this.setToken(null)
+        this.token = null
     }
   }
 })
