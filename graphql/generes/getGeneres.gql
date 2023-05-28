@@ -1,0 +1,6 @@
+query getGeneres {
+  generes {
+    name
+    id
+  }
+}

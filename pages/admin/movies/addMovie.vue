@@ -10,14 +10,15 @@ import addMovie from "@/graphql/movies/mutation/addMovie.gql";
 
 // Get the selected data for actorss, generes and director of the movie
 let generes = ref()
-let actors = ref()
+let actors = ref()  
 let director = ref()
 let images = ref([])
 let cover_image = ref({})
 const title = ref('')
-const description = ref('')
+const discrption = ref('')
 const release_date = ref('')
 const duration = ref()
+// can you discrib
 // provide function to get data from child components
 
 provide('setGeneres', (newGeneres)=>{
@@ -48,7 +49,7 @@ const handleAddMovie = () => {
   const variabless = {
     data:{
     title: title.value,
-    description: description.value,
+    discrption: discrption.value,
     date: release_date.value,
     duration: duration.value,
     generes:{
@@ -63,12 +64,11 @@ const handleAddMovie = () => {
   }
   console.log(variabless, 'variabless')
   return 
-  const {mutate, onDone, onError, loading} = uploadImage();
-
+  const {mutate, onDone, onError, loading} = uploadImage()
   const variables = {
     data:{
       images: images.value,
-      image: image.value
+      image: cover_image.value
     }
   }
   mutate(variables);
@@ -155,11 +155,10 @@ const handleAddMovie = () => {
                         <label class=" text-primary9 px-2 " for="">discrption</label>
                         <textarea v-model="discrption" class=" border border-gray-dark border-solid p-2 text-primary9" name="" id="" cols="27" rows="3"></textarea>
                     </div>
-                     <GeneresSet></GeneresSet>
+                    <AdminMoviesAddMovieSetGenere></AdminMoviesAddMovieSetGenere>
                 </div>
                 <div class=" flex flex-col space-y-6">
                     <!-- Set director to movie -->
-                    <DirectorsSet ></DirectorsSet> 
                     <AdminMoviesAddMovieSetDirector @set-director="setDirector"></AdminMoviesAddMovieSetDirector>                   
                     <!-- Upload  movie Images -->
                     <ImagesMultiUpload/>

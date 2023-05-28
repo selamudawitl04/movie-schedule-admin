@@ -7,7 +7,6 @@ import getDirectors from '@/graphql/directors/query/getDirectors.gql'
 //1. load directors
 const { onResult, loading, onError, refetch } = setDirectorList(getDirectors)
 onResult((result)=>{
-    console.log(result, 'result')
     result.data.directors.forEach((director)=>{
         directors.push(director)
 
