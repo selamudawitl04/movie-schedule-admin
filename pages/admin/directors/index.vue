@@ -30,6 +30,6 @@ const headers = ['FirstName', 'LastName','Number of Movie', 'Action 1', 'Action 
    <LayoutSubHeader name="directors"></LayoutSubHeader>
 
    <div v-if="!loading && !serverError.error">
-       <AdminActorsAndDirectorList :items="directors"></AdminActorsAndDirectorList>
+       <AdminActorsAndDirectorList type="directors" :items="directors"></AdminActorsAndDirectorList>
    </div>
 </template>

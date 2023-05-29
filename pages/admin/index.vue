@@ -3,9 +3,10 @@ import { ref } from "vue";
 definePageMeta({
   layout: "adminpanel",
 });
+import authQuery from '@/composables/authQuery.js'
 // fetch movies
 import getMovies from '@/graphql/movies/query/getMovies.gql'
-const { onResult, loading, onError, refetch } = useQuery(getMovies)
+const { onResult, loading, onError, refetch } = authQuery(getMovies, 'admin', {})
 let movies = reactive([])
 const serverError = reactive({
     error: false,

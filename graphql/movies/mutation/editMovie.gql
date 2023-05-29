@@ -1,0 +1,22 @@
+mutation MyMutation($data: movies_set_input, $id: uuid!,
+ $filter: movies_actors_bool_exp!, $data1: [movies_actors_insert_input!]!,
+ $filter2: movies_generes_bool_exp!, $data2: [movies_generes_insert_input!]!
+ ) {
+  update_movies_by_pk(pk_columns: {id: $id}, _set: $data){
+    id
+  }
+  delete_movies_actors(where: $filter){
+    affected_rows
+  }
+  insert_movies_actors(objects: $data1){
+    affected_rows 
+  }
+
+  delete_movies_generes(where: $filter2){
+    affected_rows
+  }
+  insert_movies_generes(objects: $data2){
+    affected_rows 
+  }
+  
+}

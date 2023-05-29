@@ -1,12 +1,15 @@
 
-import uploadImage from "@/graphql/images/upload.gql"
-export default function () {
+export default function (mutation, role) {
     const { mutate, onDone, loading, onError } = useMutation(
-      uploadImage,
+      mutation,
       () => ({
         fetchPolicy: "network-only",
         clientId: "authClient",
-  
+        context: {
+          headers: {
+            "x-hasura-role": role,
+          }
+        }
       })
     );
     return {

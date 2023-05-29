@@ -9,7 +9,7 @@ const selectedLink = ref('')
 </script>
 
 <template>
-    <aside class="bg-gradient-to-br from-gray-dark  to-gray-dark -translate-x-80 fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0">
+    <aside class="bg-gradient-to-br from-gray-dark  to-gray-dark  overflow-hidden z-0 fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0">
         <div class="relative border-b border-white/20">
             <NuxtLink  class="flex items-center gap-4 py-6  px-8" to="/">
                 <img src="../../assets/img/logo.png" class="inline-block relative object-cover object-center  rounded-md">

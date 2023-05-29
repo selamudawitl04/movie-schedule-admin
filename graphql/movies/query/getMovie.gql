@@ -10,6 +10,8 @@ query MyQuery($id : uuid!) {
         url
       }
     }
+    cover_image
+
     title
     discrption
     duration

@@ -1,7 +1,10 @@
 <script setup>
 import { ref , reactive} from "vue";
 import addMovie from "@/graphql/movies/mutation/addMovie.gql";
-import uploadImage from '@/composables/upload.js'
+import getMovies from '@/graphql/movies/query/getMovie.gql'
+import mutation from '@/composables/mutation.js'
+import authQuery from '@/composables/authQuery.js'
+import uploadImage from '@/graphql/images/upload.gql'
 
 definePageMeta({
   layout: "adminpanel",
@@ -15,7 +18,7 @@ const serverError = ref(false);
 // Get the selected data for actorss, generes and director of the movie
 let generes = ref([])
 let actors = ref([])
-let director = ref()
+let director = ref('b58d5c72-7608-43bb-8a6a-776c21adf65d')
 let images = ref([])
 let cover_image = ref({})
 const title = ref('')
@@ -50,8 +53,8 @@ const handleAddMovie = () => {
   // uploadImage
   // make the first image as cover image
   const coverImage = images.value.shift()
-  const {mutate, onDone, onError, loading} = uploadImage();
-  isloading.value = loading;
+  const {mutate, onDone, onError, loading} = mutation(uploadImage, 'admin');
+  isloading.value = true;
   const imageData = {
     data:{
       images : images.value,
@@ -78,15 +81,13 @@ const handleAddMovie = () => {
       })
     });
   
-
-
     console.log(moviesImages, 'moviesImages')
     // construct actors
     const movieActors = []
     actors.value.forEach(actor =>{
       movieActors.push(
         {
-          actor_id:actor
+          actor_id:actor.id
         }
       )
     })
@@ -96,24 +97,12 @@ const handleAddMovie = () => {
     generes.value.forEach(genere =>{
       movieGeneres.push(
         {
-          genere_id:genere
+          genere_id:genere.id
         } 
       )
     })
     
-
-    console.log(result, 'if the image is uploaded succesfully')
-    const {mutate, onDone, onError, loading} = useMutation(addMovie, () => ({
-        fetchPolicy: "network-only",
-        clientId: "authClient",
-        context: {
-          headers: {
-            "x-hasura-role": "admin",
-          }
-        }
-      })
-    );
-    isloading.value = loading;
+    const {mutate, onDone, onError, loading} = mutation(addMovie, 'admin');
     const movieData = {
       data:{
         title: title.value,
@@ -134,12 +123,14 @@ const handleAddMovie = () => {
 
     console.log(movieData, 'variables')
     mutate(movieData);
+    isloading.value = false;
     onDone((result) => {
       console.log(result, 'if the actor is added succesfully')
-      router.push('/admin/actors')
+      router.push('/admin')
     });
 
     onError((error) => {
+      isloading.value = false;
       console.log(error, 'when adding actor');
       serverError.value = true;
     });
@@ -148,6 +139,7 @@ const handleAddMovie = () => {
 
   onError((error) => {
     console.log(error);
+    isloading.value = false;
     serverError.value = true;
     return false
   }); 
@@ -155,7 +147,9 @@ const handleAddMovie = () => {
 }
 </script>
 <template>
-    <div class=" w-full max-w-5xl flex justify-center px-6 mx-auto  shadow-md rounded-sm py-10">
+    <BaseSpinner v-if="isloading" ></BaseSpinner>
+    <BaseDialog :show="!!serverError" title="Some thing went wrong" @close="serverError = false"></BaseDialog>
+    <div class=" w-full custom-shadow max-w-5xl flex justify-center px-6 mx-auto  shadow-md rounded-sm py-10">
         <form @submit.prevent="handleAddMovie" class="w-3/4"  action=""> 
             <h1 class="text-center text-3xl  font-bold text-primary9 py-10 uppercase">Add Movie</h1>
             <div class=" flex flex-col items-center  b w-full justify-start space-y-10">
@@ -175,9 +169,9 @@ const handleAddMovie = () => {
                         <div class="text-primary9 font-bold">Date</div>
                         <input v-model="release_date" class="border-2 p-2 border-gray rounded-md w-full" type="datetime-local" name="" id="">
                     </div>
-                    <AdminMoviesAddMovieSetDirector @set-director="setDirector"></AdminMoviesAddMovieSetDirector>                   
-                    <AdminMoviesAddMovieSetGenere></AdminMoviesAddMovieSetGenere>
-                    <AdminMoviesAddMovieSetActor></AdminMoviesAddMovieSetActor>  
+                    <AdminMoviesAddMovieSetDirector :selected-director="director" @set-director="setDirector"></AdminMoviesAddMovieSetDirector>                   
+                    <AdminMoviesAddMovieSetGenere :selected-generes="generes"></AdminMoviesAddMovieSetGenere>
+                    <AdminMoviesAddMovieSetActor :selected-actors="actors"></AdminMoviesAddMovieSetActor>  
                  
                 </div>
                 <div class=" flex flex-col space-y-6">

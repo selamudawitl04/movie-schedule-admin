@@ -12,7 +12,6 @@ const serverError = reactive({
     message: ''
 })
 onResult((result) => {
-
     actors = result.data.actors
 })
 onError((error) => {
@@ -29,8 +28,8 @@ const headers = ['FirstName', 'LastName','Number of Movie', 'Action 1', 'Action 
     </BaseDialog>
     <BaseSpinner v-if="loading"></BaseSpinner>
     <LayoutSubHeader name="actors"></LayoutSubHeader>
-
     <div v-if="!loading && !serverError.error">
-        <AdminActorsAndDirectorList :items="actors"></AdminActorsAndDirectorList>
+        <AdminActorsAndDirectorList type="actors" :items="actors"></AdminActorsAndDirectorList>
     </div>
 </template>
+<!-- Edit Query -->

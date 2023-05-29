@@ -18,7 +18,6 @@ const { onResult, loading, onError, refetch } = useQuery(getGeneres, {
   fetchPolicy: "network-only",
 });
 onResult((result) => {
-  console.log(result, "result from getGeneres")
   result.data.generes.forEach((genere) => {
     generes.push(genere);
   });
@@ -50,9 +49,11 @@ const setGenere = () => {
   }
 };
 const unSetGenere = (genere) => {
-  props.selectedGeneres.splice(
-    props.selectedGeneres.findIndex((selectedGenere) => selectedGenere.id == genere.id)
-  );
+
+  const index = props.selectedGeneres.findIndex(selectedGenere=> selectedGenere.id == genere.id)
+  
+  console.log(index,props.selectedGeneres.splice(index, 1))
+
   setGeneresToMovie(props.selectedGeneres);
 };
 </script>
@@ -85,7 +86,7 @@ const unSetGenere = (genere) => {
       <div v-for="genere in props.selectedGeneres" :key="genere.id" class="flex  items-start flex-wrap mr-2 mt-2" >
         <div class="flex bg-gray-light p-1  rounded-md space-x-2 justify-center items-center ">
           <span class="text-sm">{{ genere.name }}</span> 
-          <span @click="unSetGenere"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" class="text-red" viewBox="0 0 1024 1024"><path fill="currentColor" d="m563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8L295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512L196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1l216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"/></svg></span></div>
+          <span @click="unSetGenere(genere)"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" class="text-red" viewBox="0 0 1024 1024"><path fill="currentColor" d="m563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8L295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512L196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1l216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"/></svg></span></div>
       </div>
     </div>
   </div>

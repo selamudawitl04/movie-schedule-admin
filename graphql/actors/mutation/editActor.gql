@@ -1,0 +1,12 @@
+mutation editActor($first_name: String!, $url: String!, $last_name: String!, $actor_id: uuid!, $image_id: uuid!) {
+  update_images_by_pk(pk_columns: {id: $image_id}, _set: {url: $url}) {
+    url
+  }
+  update_directors_by_pk(pk_columns: {id: $actor_id}, _set: {first_name: $first_name, last_name: $last_name}) {
+    first_name
+    last_name
+    image {
+      url
+    }
+  }
+}

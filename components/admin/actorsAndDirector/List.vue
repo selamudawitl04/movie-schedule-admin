@@ -4,6 +4,10 @@ const props = defineProps({
     items: {
         type: Array,
         required: true
+    },
+    type:{
+        type: String,
+        required: true,
     }
 })
 
@@ -13,7 +17,7 @@ const headers = ['FirstName', 'LastName','Number of Movie', 'Action 1', 'Action 
     <!-- Table Container -->
     <div>
         <BaseTable :headers="headers">
-            <AdminActorsAndDirectorItem v-for="item in items" :key="item.id" :item="item"/>
+            <AdminActorsAndDirectorItem :type="type" v-for="item in items" :key="item.id" :item="item"/>
         </BaseTable>        
     </div>
 </template>

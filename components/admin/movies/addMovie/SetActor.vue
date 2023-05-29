@@ -2,11 +2,12 @@
 const router = useRouter();
 const actors = reactive([]);
 
-import setActorList from "~/composables/getActorsOrDirectors.js";
+import authQuery from '@/composables/authQuery.js'
 import getActors from "@/graphql/actors/query/getActors.gql";
 //1. load directors
-const { onResult, loading, onError, refetch } = setActorList(getActors);
+const { onResult, loading, onError, refetch } = authQuery(getActors, 'admin', {});
 onResult((result) => {
+  console.log(result.data.actors, 'why actor')
   result.data.actors.forEach((actor) => {
     actors.push(actor);
   });
@@ -56,14 +57,14 @@ const setActorToMovie = (actor) => {
   ) {
     props.selectedActors.unshift(actor);
     showActorsList.value = false;
-    setActor(props.selectedActors.map((actor) => actor.id));
+    setActor(props.selectedActors);
 
   }
 };
 
 const unselectActor = (actor) => {
   props.selectedActors.splice(
-    props.selectedActors.findIndex((selectedActor) => selectedActor.id == actor.id)
+    props.selectedActors.findIndex((selectedActor) => selectedActor.id == actor.id), 1
   );
   setActor(props.selectedActors);
 };

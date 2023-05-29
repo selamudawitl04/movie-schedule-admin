@@ -2,40 +2,32 @@
 import { ref , reactive} from "vue";
 import  {useAuthStore} from '@/stores/modules/auth.js'
 import addDirector from '@/graphql/directors/mutation/addDirector.gql'
-import addActorOrDirector from '@/composables/addActorOrDirector.js'
-import uploadImage from '@/composables/upload.js'
+import uploadImage from '@/graphql/images/upload.gql'
+import mutation from '@/composables/mutation.js'
 
+const director = ref({
+  image: "https://res.cloudinary.com/selamu-dawit/image/upload/v1685277262/default-avatar_qok1rd.png",
+  first_name: '',
+  last_name:''
+})
 
 
 const router = useRouter();
 const authToken = useCookie('auth_token')
 const authStore = useAuthStore();
-console.log(authStore.getUser, 'authStore.user')
-
-// handle image upload
 const serverError = ref(false);
 
-const isloading = ref(false);
-const handleAddDirector = (first_name, last_name, image) => {
-  // uploadImage
-  const {mutate, onDone, onError, loading} = uploadImage();
-  isloading.value = loading;
-  const imageData = {
-    data:{
-      images: [],
-      image: image
-    }
-  }
-  mutate(imageData);
-  // if the image is uploaded succesfully the excute add actor mutation with url of the image
-  onDone((result) => {
+
+// handle image upload
+
+const {mutate, onDone, onError, loading} = mutation(addDirector, 'admin');
+const {mutate:uplaodMutate ,onDone:uploadDone, onError:uploadError , loading:uploadLoading} = mutation(uploadImage, 'admin');
+uploadDone((result) => {
     console.log(result, 'if the image is uploaded succesfully')
-    const {mutate, onDone, onError, loading} = addActorOrDirector(addDirector);
-    isloading.value = loading;
     const directorData = {
       data:{
-        first_name,
-        last_name,
+        first_name: director.value.first_name,
+        last_name: director.value.last_name,
         image:{
           data:{
             url: result.data.uploadImages.urls[0]
@@ -43,24 +35,38 @@ const handleAddDirector = (first_name, last_name, image) => {
         } 
       }
     }
-    mutate(directorData);
-    onDone((result) => {
-      console.log(result, 'if the actor is added succesfully')
-      router.push('/admin/directors')
-    });
+    console.log(director.value, 'final adde')
+    mutate(directorData); 
+});
+uploadError((error)=>{
+  console.log(error, 'when uploading image')
+  serverError.value = true;
 
-    onError((error) => {
-      console.log(error, 'when adding actor');
-      serverError.value = true;
-    });
-    
-  });
+})
 
-  onError((error) => {
-    console.log(error);
-    serverError.value = true;
-    return false
-  }); 
+onDone((result) => {
+  console.log(result, ' Director is added succesfully')
+  router.push('/admin/directors')
+});
+
+onError((error) => {
+  console.log(error, 'when adding actor');
+  serverError.value = true;
+});
+
+const isloading = ref(false);
+const handleAddDirector = (newDirector) => {
+  director.value = newDirector
+  // uploadImage
+  const imageData = {
+    data:{
+      images: [],
+      image: director.value.image
+    }
+  }
+  console.log(imageData, 'final image')
+  uplaodMutate(imageData);
+  // if the image is uploaded succesfully the excute add actor mutation with url of the image
 
 }
 definePageMeta({
@@ -70,8 +76,8 @@ definePageMeta({
 
 <template>
   <div>
-    <BaseSpinner v-if="isloading" ></BaseSpinner>
+    <BaseSpinner v-if="loading || uploadLoading" ></BaseSpinner>
     <BaseDialog :show="!!serverError" title="Some thing went wrong" @close="serverError = false"></BaseDialog>
-    <AdminActorsAndDirectorAdd title="Add Director" @add-item="handleAddDirector"></AdminActorsAndDirectorAdd >
+    <AdminActorsAndDirectorAdd :item="director" title="Add Director" @add-item="handleAddDirector"></AdminActorsAndDirectorAdd >
   </div>
 </template>

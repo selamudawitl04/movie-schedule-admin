@@ -1,5 +1,6 @@
 
 <template>
+    <teleport to="body">
     <div class="spinner">
       <div class="lds-roller">
         <div></div>
@@ -12,6 +13,7 @@
         <div></div>
       </div>
     </div>
+    </teleport>
   </template>
   
   <style scoped>
