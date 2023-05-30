@@ -1,27 +1,36 @@
 
-// import { defineStore } from 'pinia'
-export const useCounterStore = defineStore({   
+import { defineStore } from 'pinia'
+export const useStore = defineStore({   
     id: 'store',
 
     state: () => ({ 
-        counter: 0,
-        // ...state
+        keySearch:'',
+        directorSearch: '',
+        filterByGenere: ''
     }),
 
     getters: {
-        getCounter() {
-            return this.counter
+        getKeySearch() {
+            return this.keySearch
         },
-        // ...getters
+        getDirectorSearch() {
+            return this.directorSearch
+        },
+        getFilterByGenere(){
+            return this.filterByGenere
+        }
     },
 
     actions: {
-        increment() {
-            this.counter++
-        },
-        
-
-        // ...actions
+       setKeySearch(word){
+        this.keySearch = word
+       },
+       setDirectorSearch(name){
+        this.directorSearch = name
+       },
+       setFilterByGenere(genere){
+        this.filterByGenere = genere
+       }
     }
 })
 

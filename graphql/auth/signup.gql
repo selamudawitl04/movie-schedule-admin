@@ -1,10 +1,6 @@
 mutation signup($data:signupInput!) {
   signup(arg1: $data) {
     id
-    email
-    firstName
-    lastName
-    image
     token
     role
   }

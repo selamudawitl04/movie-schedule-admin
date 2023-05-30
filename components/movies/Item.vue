@@ -21,24 +21,23 @@ const detailLink = computed(()=>{
 const date = computed(()=>{
     return new Date().toLocaleDateString()
 })
+const showGenere = ref(false)
 
 </script>
 <template>
-    <div class="" >
-        <div class="">
-            <div class="movie-poster">
+    <div class=" " >
+        <div @mouseenter="showGenere = true" @mouseleave="showGenere = false" class=" relative ">
+            <div v-if="showGenere" class=" z-50 absolute top-40 left-24 text-xl font-bold text-white ">
+                <p  v-for="movie_genere in movie.movies_generes" 
+                        :key="movie_genere.genere.id">{{movie_genere.genere.name  }} 
+                    </p>
+                </div>
+            <div class="movie-poster hover:opacity-20 ">
                 <NuxtLink :to="detailLink">
-                    <!-- <NuxtImage 
-                        :src="imgUrl"
-                        provider="cloudinary"
-                        >
-                    </NuxtImage> -->
-                    <img class="w-full max-h-80 md:max-h-max" :src="imgUrl" alt="Cover Image">
+                    <img class=" w-full h-full object-cover" :src="imgUrl" alt="Cover Image">
                 </NuxtLink>
-            
-
             </div>
-            <div class="py-6 space-y-4">
+            <div class="py-6 relative space-y-4">
                 <div class=" flex justify-between">
                     <h5 class="title text-white font-bold"><NuxtLink :to="detailLink">{{props.movie.title}}</NuxtLink></h5>
                     <span class=" text-yellow-bright">{{ date }}</span>
@@ -56,4 +55,9 @@ const date = computed(()=>{
         </div>
     </div> 
 </template>
+<style scoped>
+.movie-poster{
+    height: 380px;
+}
+</style>
 

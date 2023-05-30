@@ -1,4 +1,11 @@
 <script setup>
+import {useStore} from "~/stores/index"
+import { useAuthStore } from "~/stores/modules/auth";
+import mutation from "~/composables/mutation";
+import bookMovie from "~/graphql/bookings/bookmovie.gql"
+const router = useRouter()
+const store  = useStore()
+const authStore = useAuthStore()
 const props = defineProps({
     movie: {
         type: Object,
@@ -7,7 +14,6 @@ const props = defineProps({
 })
 
 const lastword = ref('')
-
 const title = computed(()=> {
     const words = props.movie.title.split(' ')
     if(words.length == 0) return props.movie.title
@@ -15,6 +21,14 @@ const title = computed(()=> {
     return words.join(' ')
 })
 
+function filterMoviesByGenere(genere){
+    console.log('Slele gene', genere)
+    store.setFilterByGenere(genere)
+    router.push({
+        path: '/',
+        hash: '#movieslist'
+    })
+}
 
 const date = computed(()=> {
     const date = new Date(props.movie.date)
@@ -23,6 +37,37 @@ const date = computed(()=> {
 const imgUrl = computed(()=>{
   return props.movie.image.url
 })
+
+
+// booking
+const {mutate, onDone, loading, onError } = mutation(bookMovie, 'user');
+
+const book = () => {
+    const variables = {   
+        data:[{
+            user_id: "84ca2a38-046f-4181-87e2-52bb574eba27",
+            movie_id: "e036061a-d3b4-4f2f-b06a-98546e71e5ad"
+        }]
+    }
+    console.log(variables)
+    mutate(variables)
+}
+
+onDone((result) => {
+    console.log(result)
+    window.alert('Booking successfull')
+    // if(result.data.insert_bookings_one){
+    //     authStore.addBooking(result.data.insert_bookings_one)
+    // }
+});
+
+onError((error) => {
+    console.log(error)
+    window.alert('Something went wrong')
+});
+
+
+
 
 
 // actors and directors to display
@@ -48,7 +93,11 @@ const imgUrl = computed(()=>{
                         <span class=" bg-white mr-4 font-semibold text-primary3 p-0.5 align-baseline uppercase">Pg 18</span>
                         <span class="border-4 border-white border-solid  px-2 text-white uppercase">hd</span>
                         <p class=" text-white mx-2 py-1">
-                            <a v-for="genere in props.movie.movies_generes" :key="genere.genere.id" href="#">{{ genere.genere.name }},</a>
+                            <span class=" hover:text-yellow-bright cursor-pointer"  v-for="genere in props.movie.movies_generes" 
+                                :key="genere.genere.id" href="#"
+                                @click="filterMoviesByGenere(genere.genere.name)"
+                                >{{ genere.genere.name }},
+                            </span>
                         </p>
                         <span class=" text-white mx-2 pt-1"><i class="far fa-calendar-alt"></i>{{ date }}</span>
                         <span class=" text-white pt-1"><i class="far fa-clock"></i>{{ props.movie.duration }} min</span>
@@ -59,7 +108,10 @@ const imgUrl = computed(()=>{
                     Ipsum available, but the majority have suffered alteration in some injected humour.</p>
                 <div class=" bg-primary6 w-full mt-8 max-w-lg p-8">
                     <ul class="flex flex-wrap justify-between items-center text-primary5">
-                        <li class=""><a href="#"><i class="fas fa-share-alt"></i> BookMark</a></li>
+                        <li @click="book" class=""><p class=" hover:text-yellow-bright cursor-pointer"><i class="fas fa-share-alt"></i> 
+                            BookMark</p>
+                            <span v-if="loading" a class=" absolute animate-spin text-9xl inline-block w-8 h-8 border-[3px] border-current border-t-transparent  text-yellow-bright rounded-full" role="status" aria-label="loading"></span>
+                        </li>
                         <li class="streaming">
                             <h6>Rate It</h6>
                         </li>

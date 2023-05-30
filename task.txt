@@ -1,6 +1,4 @@
 3. Searching and Filtering movie
-1. Adding and editing movies
-2. Editing actors and directors
 3. User profile Page
 4. Booking movie
 5. Buying ticket

@@ -2,8 +2,6 @@
 const router = useRouter();
 const generes = reactive([]);
 
-import getActors from "@/graphql/actors/query/getActors.gql";
-
 import getGeneres from "@/graphql/generes/getGeneres.gql";
 
 const props = defineProps({

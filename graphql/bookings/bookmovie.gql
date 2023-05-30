@@ -1,0 +1,7 @@
+mutation MyMutation($data: [bookings_insert_input!]!) {
+  insert_bookings(object: $data) {
+    user{
+      firstName
+    }
+  }
+}

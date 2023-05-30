@@ -1,3 +1,11 @@
 mutation unbook($id: uuid!) {
-  delete_bookings_by_pk(id: $id)
+  delete_bookings(where: {id: {_eq:$id }}){
+    returning{
+      id
+      user{
+        firstName
+        lastName
+      }
+    }
+  }
 }

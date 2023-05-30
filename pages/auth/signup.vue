@@ -66,16 +66,17 @@ function handleSignUp(){
      onDone((result) => {
          // check if result has value
          if (result && result.data) {
-            console.log(result.data.signup)
+            console.log(result.data.login)
             // store token on cookie
-             authToken.value = 'Bearer '+ result.data.signup.token
-             console.log(authToken.value)
-             // delete token from user data
-             delete result.data.signup.token 
-             // store user data
-             router.push('/user')
-             setUser(result.data.signup)
-
+             authToken.value = 'Bearer '+ result.data.login.token
+             authStore.setToken(result.data.login.token)
+             authStore.setId(result.data.login.id)
+             authStore.setRole(result.data.login.role)
+             if(result.data.login.role === 'admin'){
+                router.push('/admin')
+             }else{
+                router.push('/user')
+             }
          }
      });
      onError((error) => {

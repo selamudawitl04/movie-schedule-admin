@@ -5,8 +5,8 @@ definePageMeta({
 const id = useRoute().params.id;
 
 // fetch movies
-import getMovies from '@/graphql/movies/query/getMovie.gql'
-const { onResult, loading, onError, refetch } = useQuery(getMovies, {id})
+import getMovie from '@/graphql/movies/query/getMovie.gql'
+const { onResult, loading, onError, refetch } = useQuery(getMovie, {id})
 let movie = ref()
 const serverError = reactive({
     error: false,
@@ -28,7 +28,7 @@ onError((error) => {
      <BaseDialog :show="!!serverError.error" :title="serverError.message" @close="serverError.error =false">
         Please check your internet connection and try again
     </BaseDialog>
-    <BaseSpinner v-if="loading && movie"></BaseSpinner>
+    <BaseSpinner v-if="loading"></BaseSpinner>
     <div class="app">
         <main>
             <!-- Section 1 Movie Detail -->

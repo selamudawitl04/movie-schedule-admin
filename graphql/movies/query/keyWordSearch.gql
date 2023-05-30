@@ -1,0 +1,48 @@
+query keyWord($title: String!, $discrption: String!) {
+  movies(where:{
+     _or: [
+        {discrption: {_ilike: $discrption}},
+        {title: {_ilike: $title}}
+      ]
+},  distinct_on: id) {
+    date
+    director {
+      first_name
+      id
+      last_name
+      image {
+        url
+      }
+    }
+    image{
+      id
+      url
+    }
+    discrption
+    duration
+    id
+    title
+    movies_generes {
+      genere {
+        name
+        id
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

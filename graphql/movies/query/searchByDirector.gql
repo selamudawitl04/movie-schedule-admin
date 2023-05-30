@@ -1,0 +1,55 @@
+query keyWord($first_name: String!, $last_name: String!) {
+   movies(where: { director: { _or: [{ first_name: { _ilike: $first_name } }, { last_name: { _ilike: $last_name } }] } }) 
+{
+    date
+    director {
+      first_name
+      id
+      last_name 
+      image {
+        url
+      }
+    }
+    image{
+      id
+      url
+    }
+    discrption
+    duration
+    id
+    title
+    movies_generes {
+      genere {
+        name
+        id
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

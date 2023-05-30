@@ -1,26 +1,36 @@
 <script setup>
+import getUser from '@/graphql/auth/getUser.gql'
+import authQuery  from '@/composables/authQuery'
+
 
 import {useAuthStore} from '@/stores/modules/auth'
 const authStore = useAuthStore()
-const user = authStore.getUser
-console.log(user)
 
+
+function getUserId(){
+    return authStore.getUserId
+}
+watch(getUserId, (newVal, oldVal) => {
+    if(!newVal) return
+    const {onResult, loading, onError, refetch} = authQuery(getUser,'user', {id:newVal})
+    onResult((result) => { 
+        authStore.setUser(result.data.users_by_pk)
+    })
+    onError((error) => {
+        console.log(error)
+    })
+       
+})
+
+
+definePageMeta({
+    layout: "userpanel",
+});
 
 
 </script>
 
 <template>
     <div>
-        <h1 class=" text-center text-3xl font-bold">User Page</h1>
-        <div class=" bg-white shadow-gray-dark flex flex-col lg:flex-row items-center justify-center space-x-14">
-            <img width="200" :src="user.image.url" :alt=" user.firstName + 'Image'">
-            <div>
-                <h1 class=" text-center text-3xl font-bold">User Information</h1>
-                <p>{{ user.firstName }}</p>
-                <p>{{ user.lastName }}</p>
-                <p>{{ user.email }}</p>
-            </div>
-        </div>
     </div>
-
 </template>

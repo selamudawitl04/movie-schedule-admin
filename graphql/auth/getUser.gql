@@ -1,13 +1,18 @@
-query getUser($id : uuid!) {
+query getUser($id:uuid!) {
   users_by_pk(id: $id) {
-    id
+    email
     firstName
+    id
     lastName
-    email 
-    image{
-        id
-        url
-    }
     role
+    bookings {
+      id
+      movie {
+        title
+        image {
+          url
+        }
+      }
+    }
   }
 }

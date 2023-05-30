@@ -3,6 +3,8 @@ import loginMutation from '@/graphql/auth/login.gql'
 const authToken = useCookie('auth-token')
 import jwt_decode from 'jwt-decode';
 import getUser from '@/graphql/auth/getUser.gql'
+import authQuery  from '@/composables/authQuery'
+
 import { ref } from 'vue';
 
 
@@ -11,6 +13,8 @@ import { ref } from 'vue';
 export const useAuthStore = defineStore({
   id: 'auth',
   state: () => ({
+    user_id: null,
+    role: null,
     user:{
         id: null,
         email: null,
@@ -19,14 +23,11 @@ export const useAuthStore = defineStore({
         image: {
             url: null
         }
-
     },
     token: null
   }),
   getters:{
-    getUserId(state){
-        return this.state.userId
-    },
+    
     getToken(state){
         return this.token
     },
@@ -36,9 +37,23 @@ export const useAuthStore = defineStore({
     },
     getUser(state){
         return this.user
+    },
+    getRole(state){
+      return this.role
+    },
+    getUserId(state){
+      return this.user_id
     }
   },
   actions: {
+    setId(id){
+      console.log(id, 'from action part called')
+      this.user_id = id
+    },
+    setRole(role){
+      this.role = role
+    },
+
     setUser(user){
         this.user = user
         // console.log(this.user, 'from action part')
@@ -66,16 +81,14 @@ export const useAuthStore = defineStore({
         if(decoded.exp * 1000 > Date.now()){
           const decoded = jwt_decode(authToken.value);
           const id = decoded["https://hasura.io/jwt/claims"]["x-hasura-user-id"]
-          const { onResult, loading, onError, refetch } = useQuery(getUser, {id},
-            () => ({
-                fetchPolicy: "network-only",
-                clientId: "authClient",
-            }))
+          const { onResult, loading, onError, refetch } = authQuery(getUser, 'user', {id})
           onResult((result) => {
+            console.log(result.data.users_by_pk, 'from auto login')
             const user = {
               ...result.data.users_by_pk
             }
-            user.image = result.data.users_by_pk.image.url
+            this.setId(user.id)
+            console.log(user.id, 'from auto login')
             this.setUser(result.data.users_by_pk)
             this.setToken(authToken.value)
           })

@@ -15,7 +15,7 @@ const authToken = useCookie('auth-token',  { path: '/' }, { expires: 60 * 60 * 2
 // 
  const router = useRouter();
  const authStore = useAuthStore();
- const {setUser}  = authStore;
+ 
  
  const schema = Yup.object().shape({
      email: Yup.string().required('Email is required'),
@@ -31,7 +31,6 @@ const authToken = useCookie('auth-token',  { path: '/' }, { expires: 60 * 60 * 2
  
  
  function handleLogin() {
-
      const {mutate, onDone, loading, onError } = useMutation(
          loginMutation,
          () => ({
@@ -47,31 +46,23 @@ const authToken = useCookie('auth-token',  { path: '/' }, { expires: 60 * 60 * 2
             console.log(result.data.login)
             // store token on cookie
              authToken.value = 'Bearer '+ result.data.login.token
-             console.log(authToken.value)
-             // delete token from user data
-             delete result.data.login.token 
-             // store user data
-
+             authStore.setToken(result.data.login.token)
+             authStore.setId(result.data.login.id)
+             authStore.setRole(result.data.login.role)
              if(result.data.login.role === 'admin'){
                 router.push('/admin')
              }else{
                 router.push('/user')
              }
-             setUser(result.data.login)
-             authStore.token = result.data.login.token
-
          }
      });
      onError((error) => {
-
         if(error.message.includes('Invalid')){
             invalidCredential.value = true
         }else{
             someThingWrong.value = true
         }
-        
-        console.log(error.message , 66767)
-        
+        console.log(error , 66767)
      });
  } 
 

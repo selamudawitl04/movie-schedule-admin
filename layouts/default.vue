@@ -1,4 +1,4 @@
 <template>
-    <!-- <p>Mirqal Dawit</p> -->
+    <p>Mirqal Dawit</p>
     <slot/>
 </template>
