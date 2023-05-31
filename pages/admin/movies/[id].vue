@@ -35,7 +35,7 @@ onResult((result) => {
       ...result.data.movies_by_pk
     } 
     // images.value = result.data.movies_by_pk.movies_images
-    // images.value.push(result.data.movies_by_pk.image)
+    images.value.push(result.data.movies_by_pk.image)
     result.data.movies_by_pk.movies_generes.forEach(genere => {
       generes.value.push(genere.genere)
     })
@@ -44,9 +44,9 @@ onResult((result) => {
     })
     result.data.movies_by_pk.movies_images.forEach(image => {
       console.log(image.image.id, result.data.movies_by_pk.image.id)
-      if(image.image.id != result.data.movies_by_pk.image.id ){
-        images.value.push(image.image)
-      }
+      images.value.push(image.image)
+      // if(image.image.id != result.data.movies_by_pk.image.id ){
+      // }
     })
 })
 movieError((error) => {
@@ -174,7 +174,7 @@ const handleEditMovie = () => {
                  
                 </div>
                 <div class=" flex flex-col space-y-6">
-                    <ImagesList :images="images"/>
+                  <ImagesList :images="images"/>
                     
                 </div>
                     <div  class=" flex flex-col w-full ">

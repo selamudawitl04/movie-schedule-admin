@@ -19,8 +19,8 @@ const props = defineProps({
         <div class=" flex justify-between items-center">
             <!-- left -->
             <div>
-                <h3 class=" text-2xl font-bold text-primary6">Admin/{{name}}</h3>
-                <h3 class=" text-2xl font-bold text-primary6">{{name}} List</h3>
+                <!-- <h3 class=" text-2xl font-bold text-primary6">Admin/{{name}}</h3> -->
+                <h3 class=" uppercase text-2xl font-bold text-primary9">{{name}} List</h3>
 
             </div>
             <!-- right -->

@@ -42,6 +42,9 @@ query MyQuery($id : uuid!) {
         id
         name
       }
+    },
+    tickets{
+      seat_number
     }
   }
 }

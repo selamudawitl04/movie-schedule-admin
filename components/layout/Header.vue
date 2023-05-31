@@ -32,9 +32,14 @@ function searchByKey(event){
   })
 }
 
-// const profileImage = computed(() => {
-//   return authStore.getUser.image.url
-// })
+const profileImage = computed(() => {
+  return authStore.getUser.image.url
+})
+
+const link = computed(()=>{
+  console.log('role', authStore.getRole)
+  return '/'+authStore.getRole
+})
 
 const displayGenere = ref(false)
 const smallScreenGenere = ref(false)
@@ -79,12 +84,12 @@ const displayLinks = ref(false)
         <div class="hidden search-input-and-icon md:block">
             <input @input="searchByKey" @focus="gotoMovieList" placeholder="any keyword" class="py-3 px-12  bg-gray-dark focus:bg-white    rounded-full">
         </div>
-        <!-- <div v-if="authStore.isLoggedIn" class="w-12 h-12 border-4 border-yellow-bright rounded-full overflow-hidden">
+        <div v-if="authStore.isLoggedIn" class="w-12 hidden lg:block h-12 border-4 border-yellow-bright rounded-full overflow-hidden">
           <NuxtLink   :to="link">
             <img :src="profileImage" class="object-cover"   alt="">
             </NuxtLink>
-        </div> -->
-        <div >
+        </div>
+        <div v-else>
           <NuxtLink class="hidden lg:block text-white uppercase bg-primary2 font-bold rounded-full border-4 border-solid border-yellow-bright py-2 px-8 hover:bg-yellow-bright hover:text-gray-dark"  to="/auth/login">SIGN IN</NuxtLink>
         </div>
         <div @mouseenter=" displayLinks = true" class="flex flex-col space-y-2 lg:hidden">
@@ -101,7 +106,7 @@ const displayLinks = ref(false)
             <button @click="smallScreenGenere = true"  class="uppercase hover:text-yellow-bright text-white font-bold   " to="/">Genere</button>
             </p>
             <p class=" text-left uppercase my-2  text-white font-bold hover:text-yellow-bright">
-            <NuxtLink active-class=" text-yellow-bright" class=" hover:text-yellow-bright text-white font-bold   " to="/user">Profile</NuxtLink>
+            <NuxtLink active-class=" text-yellow-bright" class=" hover:text-yellow-bright text-white font-bold " to="/user">Profile</NuxtLink>
             </p>
             <p class=" text-left uppercase my-2  text-white font-bold hover:text-yellow-bright">
             <NuxtLink active-class=" text-yellow-bright" class=" hover:text-yellow-bright text-white font-bold   " to="/user">Pricing</NuxtLink>

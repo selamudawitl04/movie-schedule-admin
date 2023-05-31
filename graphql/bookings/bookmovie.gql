@@ -1,5 +1,5 @@
-mutation MyMutation($data: [bookings_insert_input!]!) {
-  insert_bookings(object: $data) {
+mutation MyMutation($data: bookings_insert_input!) {
+  insert_bookings_one(object: $data) {
     user{
       firstName
     }

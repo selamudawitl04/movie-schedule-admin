@@ -13,7 +13,9 @@ const serverError = reactive({
     message: ''
 })
 onResult((result) => {
-    movie.value = result.data.movies_by_pk
+    movie.value = {
+        ...result.data.movies_by_pk
+    }
     console.log(movie.value)
 })
 onError((error) => {

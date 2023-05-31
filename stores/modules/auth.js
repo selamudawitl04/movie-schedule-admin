@@ -4,11 +4,7 @@ const authToken = useCookie('auth-token')
 import jwt_decode from 'jwt-decode';
 import getUser from '@/graphql/auth/getUser.gql'
 import authQuery  from '@/composables/authQuery'
-
 import { ref } from 'vue';
-
-
-
 // import gql from 'graphql-tag'
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -83,7 +79,6 @@ export const useAuthStore = defineStore({
           const id = decoded["https://hasura.io/jwt/claims"]["x-hasura-user-id"]
           const { onResult, loading, onError, refetch } = authQuery(getUser, 'user', {id})
           onResult((result) => {
-            console.log(result.data.users_by_pk, 'from auto login')
             const user = {
               ...result.data.users_by_pk
             }
@@ -91,18 +86,19 @@ export const useAuthStore = defineStore({
             console.log(user.id, 'from auto login')
             this.setUser(result.data.users_by_pk)
             this.setToken(authToken.value)
+            this.setRole(user.role)
           })
           onError((error) => {
               // router.push('/error')
               console.log(error)
           })
-        
         }else{
           // console.log(555555)
         }
     },
     logout(){
-        this.token = null
+      authToken.value = null
+      this.token = null
     }
   }
 })

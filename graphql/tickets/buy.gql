@@ -1,0 +1,8 @@
+mutation buyTicket($data: tickets_insert_input!) {
+  insert_tickets_one(object: $data){
+    id
+    movie{
+      title
+    }
+  }
+}

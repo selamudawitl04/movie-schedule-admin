@@ -5,6 +5,10 @@ query getUser($id:uuid!) {
     id
     lastName
     role
+    image{
+      id
+      url
+    }
     bookings {
       id
       movie {
