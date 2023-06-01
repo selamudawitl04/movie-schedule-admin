@@ -1,7 +1,4 @@
 <script setup>
-import getUser from '@/graphql/auth/getUser.gql'
-import authQuery  from '@/composables/authQuery'
-
 
 import {useAuthStore} from '@/stores/modules/auth'
 const authStore = useAuthStore()
@@ -11,27 +8,26 @@ const user = ref({
     lastName: null
 })
 
-
-function getUserId(){
-    return authStore.getUserId
+function getUser(){
+    return authStore.getUser
 }
-watch(getUserId, (newVal, oldVal) => {
-    if(!newVal) return
-    const {onResult, loading, onError, refetch} = authQuery(getUser,'user', {id:newVal})
-    onResult((result) => { 
-        authStore.setUser(result.data.users_by_pk)
-        user.value.firstName = result.data.users_by_pk.firstName
-        user.value.lastName = result.data.users_by_pk.lastName
-    })
-    onError((error) => {
-        console.log(error)
-    })
-       
+watch(getUser, (newVal, oldVal) => {
+    if(newVal){
+        user.value.firstName = newVal.firstName
+        user.value.lastName = newVal.lastName
+    }
 })
+
+if(authStore.getUser){
+    
+    user.value.firstName = authStore.getUser.firstName
+    user.value.lastName = authStore.getUser.lastName
+}
 
 
 definePageMeta({
     layout: "userpanel",
+    // middleware:["user"]
 });
 
 

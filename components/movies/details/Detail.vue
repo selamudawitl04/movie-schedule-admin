@@ -28,6 +28,12 @@ const title = computed(()=> {
     lastword.value = words.pop()
     return words.join(' ')
 })
+const rating = computed(()=>{
+    if(props.movie.ratings_aggregate.aggregate.avg.rating == null){
+        return 3.5
+    }
+    return props.movie.ratings_aggregate.aggregate.avg.rating 
+})
 
 function filterMoviesByGenere(genere){
     console.log('Slele gene', genere)
@@ -109,7 +115,6 @@ ratingDone((result) => {
         successAlert.value = false
         location.reload()
     }, 3000);
-    
 });
 
 ratingOnError((error) => {
@@ -214,7 +219,7 @@ buyOnError((error) => {
                             <span v-if="loading" class="z-50 left-5  -top-1  absolute animate-spin text-9xl inline-block w-8 h-8 border-[3px] border-current border-t-transparent  text-yellow-bright rounded-full" role="status" aria-label="loading"></span>
                         </li>
                         <div class=" flex flex-col items-center relative">
-                            <h6 class=" absolute -top-2">3.4</h6>
+                            <h6 class=" absolute -top-2">{{rating}}</h6>
                             <div class="rating self-center ">
                                 <input  @click="rate(5)"  type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
                                 <input   @click="rate(4)" type="radio" name="rating" value="4" id="4"><label for="4">☆</label>
@@ -230,7 +235,7 @@ buyOnError((error) => {
             </div>
         </div>
     </div>
-    <TicketsForm v-if="displayTicketForm" @buy-ticket="buyTicket" :tickets="tickets"></TicketsForm>
+    <TicketsForm @close-form="displayTicketForm = false" v-if="displayTicketForm" @buy-ticket="buyTicket" :tickets="tickets"></TicketsForm>
     <BaseAlert v-if="successAlert" :message="alertMessage"></BaseAlert>
   </template>
   <style scoped>

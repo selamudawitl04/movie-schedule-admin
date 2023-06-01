@@ -17,11 +17,19 @@ query keyWord($first_name: String!, $last_name: String!) {
     discrption
     duration
     id
+    status
     title
     movies_generes {
       genere {
         name
         id
+      }
+    }
+    ratings_aggregate {
+      aggregate {
+        avg {
+          rating
+        }
       }
     }
   }

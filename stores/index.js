@@ -6,10 +6,15 @@ export const useStore = defineStore({
     state: () => ({ 
         keySearch:'',
         directorSearch: '',
-        filterByGenere: ''
+        filterByGenere: '',
+        adminSearch: '',
     }),
 
     getters: {
+        getAdminSearch() {
+            return this.adminSearch
+        },
+
         getKeySearch() {
             return this.keySearch
         },
@@ -30,7 +35,10 @@ export const useStore = defineStore({
        },
        setFilterByGenere(genere){
         this.filterByGenere = genere
-       }
+       },
+       setAdminSearch(word){
+        this.adminSearch = word
+        },
     }
 })
 

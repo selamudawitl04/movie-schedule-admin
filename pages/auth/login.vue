@@ -4,7 +4,7 @@ const name = useCookie('name')
 definePageMeta({
   layout: "movies", 
 });
- import { Form, Field } from 'vee-validate';
+import { Form, Field } from 'vee-validate';
 import loginMutation from '@/graphql/auth/login.gql'
 
 import * as Yup from 'yup';
@@ -12,9 +12,8 @@ import { ref, watch} from 'vue'
 import { useRouter, useRoute, onBeforeRouteLeave} from 'vue-router'
 import { useAuthStore } from '@/stores/modules/auth'
 const authToken = useCookie('auth-token',  { path: '/' }, { expires: 60 * 60 * 24 * 10 })
-// 
- const router = useRouter();
- const authStore = useAuthStore();
+const router = useRouter();
+const authStore = useAuthStore();
  
  
  const schema = Yup.object().shape({
@@ -49,6 +48,7 @@ const authToken = useCookie('auth-token',  { path: '/' }, { expires: 60 * 60 * 2
              authStore.setToken(result.data.login.token)
              authStore.setId(result.data.login.id)
              authStore.setRole(result.data.login.role)
+             authStore.setUser(result.data.login.id)
              if(result.data.login.role === 'admin'){
                 router.push('/admin')
              }else{
@@ -68,7 +68,7 @@ const authToken = useCookie('auth-token',  { path: '/' }, { expires: 60 * 60 * 2
 
  </script>
  <template>
- <div class="login pt-16">
+ <div class="login pt-16 ">
      <base-dialog :show="someThingWrong" @close="someThingWrong = false" title="Some thing Went Wrong"></base-dialog>
      <div id="detail-header-container" class="auth    bg-primary3 bg-no-repeat bg-cover bg-center relative pt-12" style="">
       <div class="back absolute bg-gradient-to-l from-orange-600 to-orange-400 opacity-75 inset-0 z-1"></div>

@@ -3,6 +3,15 @@
 import { ref } from "vue";
 const selectedLink = ref('')
 
+
+import {useAuthStore} from '~/stores/modules/auth'
+const authStore = useAuthStore()
+const router = useRouter()
+const logout = () => {
+    authStore.logout()
+    router.push('/')
+}
+
 </script>
 
 <template>
@@ -55,6 +64,20 @@ const selectedLink = ref('')
                         Add Director</NuxtLink>
                 </li>
                 
+        <div class="">
+            <button @click="logout"  class="w-full items-center flex  space-x-2   text-left   bg-gray-dark mb-2 text-white font-bold p-4 hover:bg-yellow-bright" >
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     width="20"
+                    height="20"
+                    class="text-white cursor-pointer"
+                viewBox="0 0 24 24">
+                <path
+                fill="currentColor"
+            d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"
+                  />
+                </svg>
+                Logout</button >
+        </div>
                 <!-- <li class=" p-4 rounded-md hover:bg-primary7 ">
                     <NuxtLink to="/admin/movies">
                         Logout</NuxtLink>

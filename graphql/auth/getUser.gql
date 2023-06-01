@@ -9,10 +9,25 @@ query getUser($id:uuid!) {
       id
       url
     }
-    bookings {
+     bookings(where: {user_id: {_eq: $id}}) {
       id
       movie {
+        id
         title
+        image {
+          url
+        }
+      }
+    }
+    tickets(where: {user_id: {_eq: $id}}) {
+      id
+      price
+      date
+      seat_number
+      movie {
+        id
+        title
+        date
         image {
           url
         }

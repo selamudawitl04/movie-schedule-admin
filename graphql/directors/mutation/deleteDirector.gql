@@ -1,0 +1,6 @@
+mutation deleteDirector($id:uuid!) {
+  delete_directors_by_pk(id: $id){
+    	id
+    	first_name
+  }
+}

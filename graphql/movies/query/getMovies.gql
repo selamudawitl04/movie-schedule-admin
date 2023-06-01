@@ -17,10 +17,18 @@ query getMovies {
     duration
     id
     title
+    status
     movies_generes {
       genere {
         name
         id
+      }
+    }
+    ratings_aggregate {
+      aggregate {
+        avg {
+          rating
+        }
       }
     }
   }

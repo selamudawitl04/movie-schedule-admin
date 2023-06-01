@@ -1,0 +1,8 @@
+mutation updateStatus($id:uuid!, $state: String!) {
+  update_movies(where: {id: {_eq: $id}}, _set: {status: $state}) {
+    returning {
+      id
+      title
+    }
+  }
+}

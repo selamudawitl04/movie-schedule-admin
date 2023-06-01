@@ -1,0 +1,6 @@
+mutation deleteActor($id:uuid!) {
+  delete_actors_by_pk(id: $id){
+    id
+    first_name
+  }
+}

@@ -71,6 +71,8 @@ const handleAddActor = (newactor) => {
 }
 definePageMeta({
   layout: "adminpanel",
+  middleware: ["admin"],
+
 });
 </script>
 

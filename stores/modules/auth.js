@@ -12,13 +12,6 @@ export const useAuthStore = defineStore({
     user_id: null,
     role: null,
     user:{
-        id: null,
-        email: null,
-        firstName : null,
-        lastName: null,
-        image: {
-            url: null
-        }
     },
     token: null
   }),
@@ -28,7 +21,6 @@ export const useAuthStore = defineStore({
         return this.token
     },
     isLoggedIn(state){
-      console.log(!!state.token)
       return !!state.token
     },
     getUser(state){
@@ -43,63 +35,49 @@ export const useAuthStore = defineStore({
   },
   actions: {
     setId(id){
-      console.log(id, 'from action part called')
       this.user_id = id
     },
     setRole(role){
       this.role = role
     },
 
-    setUser(user){
-        this.user = user
-        // console.log(this.user, 'from action part')
+    // This function is called when the user has valid tokin, it may be token from backend
+    //  or from cookie
+    setUser(id){
+      const { onResult, loading, onError, refetch } = authQuery(getUser, 'user', {id})
+      onResult((result) => {
+        this.user = {
+          ...result.data.users_by_pk
+        }
+      })
+      onError((error) => {
+          console.log(error)
+      })
     },
     setToken(token){
       this.token = token
     },
-    async login(payload){
-      
+    logout(){
+      authToken.value = null
+      this.token = null
+      this.user = null
     },
-    async signup(payload){
-        
-    },
-
-    async forgotPassword(){
-    },
-    async resetPassword(){
-    },
+    // This function checks the token in cookie and if it is valid then it sets the token
     async autoLogin(){
         let decoded = {}
         if(authToken.value){
           decoded = jwt_decode(authToken.value);
-        }
-        
-        if(decoded.exp * 1000 > Date.now()){
-          const decoded = jwt_decode(authToken.value);
-          const id = decoded["https://hasura.io/jwt/claims"]["x-hasura-user-id"]
-          const { onResult, loading, onError, refetch } = authQuery(getUser, 'user', {id})
-          onResult((result) => {
-            const user = {
-              ...result.data.users_by_pk
-            }
-            this.setId(user.id)
-            console.log(user.id, 'from auto login')
-            this.setUser(result.data.users_by_pk)
+          if(decoded.exp * 1000 > Date.now()){
+            const decoded = jwt_decode(authToken.value);
+            const id = decoded["https://hasura.io/jwt/claims"]["x-hasura-user-id"]
+            const role = decoded["https://hasura.io/jwt/claims"]["x-hasura-role"]
             this.setToken(authToken.value)
-            this.setRole(user.role)
-          })
-          onError((error) => {
-              // router.push('/error')
-              console.log(error)
-          })
-        }else{
-          // console.log(555555)
-        }
+            this.setRole(role)
+            this.setUser(id)   
+          }
+        } 
     },
-    logout(){
-      authToken.value = null
-      this.token = null
-    }
+    
   }
 })
 

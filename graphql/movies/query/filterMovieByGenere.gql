@@ -17,6 +17,7 @@ query filterByGenere($genere: String!) {
     discrption
     duration
     id
+    status
     title
     movies_generes {
       genere {

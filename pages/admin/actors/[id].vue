@@ -105,6 +105,8 @@ const handleEditActor = (newActor) => {
 }
 definePageMeta({
   layout: "adminpanel",
+  middleware: ["admin"],
+
 });
 </script>
 

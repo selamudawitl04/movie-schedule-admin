@@ -65,10 +65,9 @@
               </div>
               <div class=" bg-primary1  text-primary5">
                 <div class="  flex justify-center items-center">
-                    <p class="text-center py-10">Copyright © 2023. All Rights Reserved By <a class=" text-yellow-bright" href="index.html">SDFlx</a></p>
+                    <p class="text-center py-10">Copyright © 2023. All Rights Reserved By <a class=" text-yellow-bright" href="index.html">SoLFlx</a></p>
                 </div>
-              </div>
-              
+              </div>  
     </footer>
   </template>
   
@@ -84,10 +83,8 @@
   }
   
   .footer-1 {
-    
     background-image: url(../../assets/img/footer_bg.jpg);
-  
-   
+
   }
   
   

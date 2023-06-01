@@ -1,0 +1,25 @@
+mutation MyMutation($id: uuid!, 
+    $filter1: movies_actors_bool_exp!,
+    $filter2: movies_generes_bool_exp!,
+    $filter3: movies_images_bool_exp!) {
+
+  delete_movies_actors(where: $filter1){
+    affected_rows
+  }
+  delete_movies_generes(where: $filter2){
+    affected_rows
+  }
+  delete_movies_images(where: $filter3){
+    affected_rows
+  }
+  delete_movies_by_pk(id: $id){
+    title
+    id
+  }
+  delete_bookings(where: {movie_id: {_eq: $id}}){
+    affected_rows
+  }
+  delete_tickets(where: {movie_id: {_eq: $id}}){
+    affected_rows
+  }
+}

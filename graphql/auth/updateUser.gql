@@ -1,0 +1,7 @@
+mutation updateUser($data: updateInput!) {
+  updateUser(arg1: $data) {
+    id
+    role
+    token
+  }
+}

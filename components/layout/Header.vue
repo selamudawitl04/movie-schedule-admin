@@ -2,9 +2,11 @@
 import { useAuthStore } from "~/stores/modules/auth";
 import {useStore} from "~/stores/index"
 const router = useRouter()
+const route = useRoute()
+
+
 
 const authStore = useAuthStore()
-
 const generes = reactive([]);
 import getGeneres from "@/graphql/generes/getGeneres.gql";
 //1. load generes
@@ -33,7 +35,7 @@ function searchByKey(event){
 }
 
 const profileImage = computed(() => {
-  return authStore.getUser.image.url
+  return authStore.getUser?.image?.url
 })
 
 const link = computed(()=>{
@@ -53,7 +55,10 @@ function filterMovieByGenere(genere){
     hash: '#movieslist'
   })
 }
-
+const logout = () => {
+    authStore.logout()
+    router.push('/')
+}
 const displayLinks = ref(false)
 
 </script>
@@ -123,7 +128,7 @@ const displayLinks = ref(false)
 
       </nav>
       <div @mouseleave="displayGenere = false"
-        v-if="displayGenere && !loading && generes" 
+        v-if="displayGenere && route.path== '/' && !loading && generes" 
         class=" absolute left-96 top-16 w-80  z-50  bg-gray-dark rounded-xl">
         <div class="flex flex-row flex-wrap justify-start p-2">
           <p v-for=" genere in generes " :key="genere.id"

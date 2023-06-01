@@ -17,9 +17,11 @@ let isloading = ref(false)
 function setMovies(result){
     movies.value = []
     result.data.movies.forEach(movie => {
-        movies.value.push(movie)
+        if(movie.status == 'active'){
+            movies.value.push(movie)
+        }
     });
-    console.log(movies.value)
+    // console.log(movies.value)
 }
 
 // function to set Error 
@@ -133,8 +135,6 @@ definePageMeta({
 </script>
 <template>
 
-    <h2 class=" z-50 text-6xl font-bold">{{ store.getSearch }}</h2>
-    
     <div class="app">
         <!-- Body Header -->
         <MoviesHeader/>
@@ -146,7 +146,13 @@ definePageMeta({
             <BaseDialog :show="!!serverError.error" :title="serverError.message" @close="serverError.error =false">
                 Please check your internet connection and try again
             </BaseDialog>
-            <BaseSpinner v-if="isloading"></BaseSpinner>
+            <BasePopup v-if="isloading">
+                <div class=" fixed z-50 top-48 ">
+                    <img   src="@/assets/img/preloader.svg" alt="">
+                </div>
+            </BasePopup>
+            <!-- <BaseSpinner v-if="isloading"></BaseSpinner> -->
+           
             <!-- Search Movie by director and Header -->
             <div id="movieslist" v-if="!serverError.error"  class=" px-4 flex flex-col justify-center items-center z-50  lg:flex-row lg:justify-between relative container mx-auto">
                 <div>
@@ -156,13 +162,14 @@ definePageMeta({
                     <input @input="setDirectorSearch" placeholder="search by director" class="py-3 px-12  border-4 border-solid border-yellow-bright   bg-gray-dark focus:bg-white    rounded-full">
                 </div>
             </div>
-
             <!-- Movie List Container -->
             <div  v-if="!isloading && !serverError.error" class="container mx-auto z-50 px-4  relative">
                 <MoviesList :movies="movies"/>
                 <!-- <MoviesList :movies="movies"/> -->
             </div> 
         </section>
+        <OthersAdvert></OthersAdvert>
+
     </div>
 </template>
 

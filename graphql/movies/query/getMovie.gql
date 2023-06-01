@@ -46,5 +46,12 @@ query MyQuery($id : uuid!) {
     tickets{
       seat_number
     }
+    ratings_aggregate {
+      aggregate {
+        avg {
+          rating
+        }
+      }
+    }
   }
 }

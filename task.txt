@@ -1,17 +1,23 @@
-3. Searching and Filtering movie
-3. User profile Page
-4. Booking movie
-5. Buying ticket
-6. Rating movie
-7. Recomending other website
+5. Reset Password
 8. Pagination
 9. Protecting image upload in backend
-10. Detail Page Image Animation
+3. Detail Page Image Animation  If I have time to shoe
 
-Get hoy bezi hulu agizegn
-1. Adding and Editing movie
-A.Collecting data
-B.Executing mutation
+
+1. triger, computed property
+1. Movie Status triger Must
+Update User Date
+
+1. Form and Date 
+2. Query 
+3. Excute
+
+
+
+
+
+
+
 
 
 

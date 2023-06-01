@@ -8,6 +8,8 @@ import uploadImage from '@/graphql/images/upload.gql'
 
 definePageMeta({
   layout: "adminpanel",
+  middleware: ["admin"],
+
 });
 
 const router = useRouter()

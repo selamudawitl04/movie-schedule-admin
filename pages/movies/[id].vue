@@ -27,10 +27,14 @@ onError((error) => {
 </script>
 
 <template>
-     <BaseDialog :show="!!serverError.error" :title="serverError.message" @close="serverError.error =false">
+     <BaseDialog :show="serverError.error" :title="serverError.message" @close="serverError.error =false">
         Please check your internet connection and try again
     </BaseDialog>
-    <BaseSpinner v-if="loading"></BaseSpinner>
+    <BasePopup v-if="loading">
+        <div class=" fixed z-50 top-48 ">
+            <img   src="@/assets/img/preloader.svg" alt="">
+        </div>
+    </BasePopup>
     <div class="app">
         <main>
             <!-- Section 1 Movie Detail -->

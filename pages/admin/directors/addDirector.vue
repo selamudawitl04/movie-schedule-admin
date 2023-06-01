@@ -71,6 +71,8 @@ const handleAddDirector = (newDirector) => {
 }
 definePageMeta({
   layout: "adminpanel",
+  middleware: ["admin"],
+
 });
 </script>
 

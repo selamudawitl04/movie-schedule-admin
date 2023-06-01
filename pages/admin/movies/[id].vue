@@ -6,6 +6,8 @@ import mutation from '@/composables/mutation.js'
 import authQuery from '@/composables/authQuery.js'
 definePageMeta({
   layout: "adminpanel",
+  middleware: ["admin"],
+
 });
 
 const router = useRouter()
@@ -75,7 +77,6 @@ provide('setCover', (imageId)=>{
 const {mutate, onDone, onError, loading} = mutation(editMovie, 'admin')
 // const isloading = ref(false)
 const handleEditMovie = () => {
- 
 
     // delete from movies actors
     // 1. movies_actors id 

@@ -11,7 +11,7 @@ const props = defineProps({
     }
 })
 
-const headers = ['FirstName', 'LastName','Number of Movie', 'Action 1', 'Action 2']
+const headers = ['FirstName', 'LastName','Number of Movie', 'Update', 'Delete']
 </script>
 <template>
     <!-- Table Container -->

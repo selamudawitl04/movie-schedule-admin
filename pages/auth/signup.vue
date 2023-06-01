@@ -1,10 +1,8 @@
 <script setup>
-
-const name = useCookie('name')
 definePageMeta({
   layout: "movies",
 });
- import { Form, Field } from 'vee-validate';
+import { Form, Field } from 'vee-validate';
 import signupMutation from '@/graphql/auth/signup.gql'
 
  import * as Yup from 'yup';
@@ -12,10 +10,8 @@ import signupMutation from '@/graphql/auth/signup.gql'
  import { useRouter, useRoute, onBeforeRouteLeave} from 'vue-router'
  import { useAuthStore } from '@/stores/modules/auth'
 const authToken = useCookie('auth-token',  { path: '/' }, { maxAge: 60 * 60 * 24 * 10 })
-
- const router = useRouter();
- const authStore = useAuthStore();
- const {setUser}  = authStore;
+const router = useRouter();
+const authStore = useAuthStore();
 
 const schema = Yup.object().shape({
   fullName: Yup.string("must be letter").
@@ -66,13 +62,14 @@ function handleSignUp(){
      onDone((result) => {
          // check if result has value
          if (result && result.data) {
-            console.log(result.data.login)
+            console.log(result.data.signup)
             // store token on cookie
-             authToken.value = 'Bearer '+ result.data.login.token
-             authStore.setToken(result.data.login.token)
-             authStore.setId(result.data.login.id)
-             authStore.setRole(result.data.login.role)
-             if(result.data.login.role === 'admin'){
+             authToken.value = 'Bearer '+ result.data.signup.token
+             authStore.setToken(result.data.signup.token)
+             authStore.setId(result.data.signup.id)
+             authStore.setRole(result.data.signup.role)
+             authStore.setUser(result.data.signup.id)
+             if(result.data.signup.role === 'admin'){
                 router.push('/admin')
              }else{
                 router.push('/user')
