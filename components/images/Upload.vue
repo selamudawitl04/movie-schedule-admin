@@ -34,7 +34,7 @@ const uploadImage = (event)=>{
 <template>
     <div>        <!-- Left Side -->
         <label @click="selecteImage" for="image" class=" cursor-pointer my-0">
-            <img :src="image"   id="image-preview" class=" w-40  border-4 hover:border-yellow-bright border-primary9"  alt="Avater Image">
+            <img :src="image"   id="image-preview" class=" w-40 h-40  border-4 hover:border-yellow-bright border-primary9"  alt="Avater Image">
         </label>
         <input id="image-input" @change="uploadImage" class=" opacity-0 h-0 p-0 m-0" type="file" name="image" >
         <h2 @click="selecteImage" class="ml-5 my-0 cursor-pointer uppercase text-primary9 font-semibold">Choose Image</h2>

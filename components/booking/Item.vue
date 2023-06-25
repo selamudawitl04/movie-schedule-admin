@@ -24,7 +24,9 @@ function unBookMovie(index){
 
 <template>
     <div class=" mb-6 mr-3" >
-        <img class=" block h-80 w-72"  :src="movie.image.url" :alt="movie.title">
+        <NuxtLink  class=" block" :to="`/movies/${movie.id}`">
+            <img class=" block h-80 w-72"  :src="movie.image.url" :alt="movie.title">
+        </NuxtLink>
         <div class=" flex flex-nowrap justify-between p-2 bg-gray-dark text-white">
             <h1 class=" font-bold">{{ movie.title }}</h1>
             <div class="relative">

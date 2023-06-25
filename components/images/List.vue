@@ -10,7 +10,6 @@ const props = defineProps({
   }
 })
 
-console.log(props.images, 'from upload images')
 
 function setCover(index){
     const temp = props.images[index];

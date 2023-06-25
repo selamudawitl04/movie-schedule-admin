@@ -1,3 +1,4 @@
+// graphql client with auth token
 import { defineApolloClient } from "@nuxtjs/apollo";
 export default defineApolloClient({
   httpEndpoint: process.env.GRAPHQL_ENDPOINT,
@@ -6,5 +7,3 @@ export default defineApolloClient({
   authHeader: "Authorization",
   tokenName: 'auth_token',
 });
-
-// 1.Authentication

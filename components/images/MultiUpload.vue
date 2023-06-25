@@ -4,10 +4,6 @@
 
 const base64Images = ref([]);
 const setImages = inject("setImages");
-
-
-
-
 const mainImage = (index) => {
   const temp = base64Images.value[index];
   base64Images.value[index] = base64Images.value[0];
@@ -36,7 +32,6 @@ const handleImage = async () => {
       await readAndPreview(files[i]);
     }
   }
-
 
 };
 </script>

@@ -1,95 +1,171 @@
 <script setup>
+import updateStatus from '@/graphql/movies/mutation/updateStatus.gql'
+import mutation from "~/composables/mutation";
+
 const props = defineProps({
-    movie:{
+    movieData: {
         type: Object,
         required: true
-    },
-    index:{
-        type: Number,
-        required: true
     }
-})  
-
-const imgUrl = computed(()=>{
-  return props.movie.image.url
 })
 
-const detailLink = computed(()=>{
-    return '/movies/' + props.movie.id;
+const movie = ref({
 })
+movie.value = {
+    ...props.movieData
+}
 
-const date = computed(()=>{
-    return new Date().toLocaleDateString()
+const status = ref(['active', 'pending', 'closed'])
+const imgUrl = computed(() => movie.value.image.url)
+const directorFullName = computed(() => movie.value.director.first_name + ' ' + movie.value.director.last_name)
+const date = computed(() => {
+    const date = new Date(movie.value.date)
+    return date.toISOString().split('T')[0]
 })
+const editPageLink = computed(() => '/movies/editMovie/' + movie.value.id)
+const detailPageLink = computed(() => '/movies/' + movie.value.id)
 
-const rating = computed(()=>{
-    console.log(props.movie.title, props.movie.ratings_aggregate.aggregate.avg.rating)
-    if(props.movie.ratings_aggregate.aggregate.avg.rating == null){
-        return 3.5
+const changeName = (name) => {
+    if(name == 'active'){
+        return 'activate'
     }
-    return props.movie.ratings_aggregate.aggregate.avg.rating 
-})
-const showGenere = ref(false)
+    else if(name == 'pending'){
+        return 'pend'
+    }
+    else if(name == 'closed'){
+        return 'close'
+    }
+}
+const displayAction = ref(false)
+
+const newState = ref('')
+const {mutate, onDone, loading, onError } = mutation(updateStatus);
+onDone((result) => {
+    displayAction.value = false
+    //  change state
+    console.log('state is chnaged succefully')
+    movie.value.status = newState
+
+});
+onError((error) => {
+    console.log(error)
+});
+    
+function changeStatus(state){
+    displayAction.value = false
+    newState.value = state
+    const variables = {
+        id:movie.value.id,
+        state
+    }
+    mutate(variables)
+
+}
+
+// delete movies 
+const showDeleteDialog = ref(false)
+const deleteLoading = ref(false)
+const emit = defineEmits(['delete-movie'])
+function deleteMovie(){
+
+    emit('delete-movie', movie.value.id)
+    deleteLoading.value = true
+    setTimeout(() => {
+        deleteLoading.value = false
+    }, 3000);
+}
+function toggleDelete(){
+    showDeleteDialog.value = !showDeleteDialog.value
+}
 
 </script>
+
 <template>
-    <div class=" " >
-        <div @mouseenter="showGenere = true" @mouseleave="showGenere = false" class=" relative ">
-            <div v-if="showGenere" class=" z-50 absolute top-40 left-24 text-xl font-bold text-white ">
-                <p  v-for="movie_genere in movie.movies_generes" 
-                        :key="movie_genere.genere.id">{{movie_genere.genere.name  }} 
+    <tr>
+        <td class=" text-gray-dark font-bold">
+            <NuxtLink :to="detailPageLink">
+                <img class="w-8  rounded-md h-8 inline" :src="imgUrl" alt="Movie Image">
+                 {{ movie.title}}
+            </NuxtLink>
+        </td>
+        <td class=" text-primary9 font-bold">{{date}}</td>
+        <td class=" text-gray-dark font-bold">{{ movie.duration }}</td>
+        <td class="  relative text-primary9 font-bold">
+            <span @click="displayAction = !displayAction" class=" cursor-pointer rounded-md"  :class="movie.status">{{ movie.status }}</span>
+            <span v-if="loading"  class=" absolute left-7  top-6 animate-spin text-9xl inline-block w-8 h-8 border-[3px] border-current border-t-transparent  text-yellow-bright rounded-full" role="status" aria-label="loading"></span>
+            <div v-if="displayAction" class=" left-0 absolute">
+                <button @click="changeStatus(state)" class="mr-2 underline" v-for="state in status " :key="state"  >
+                    <span v-if="state != movie.status">{{ changeName(state) }}</span>
+                </button>
+            </div>
+        </td>
+        <td class=" " >
+            <NuxtLink :to="editPageLink" class=" py-1 ml-0.5  text-white font-bold bg-gray-dark rounded-md px-4">Edit</NuxtLink>
+        </td>
+        <td class=" relative" >
+            <button @click="toggleDelete"  class="px-1.5 ml-0.5  pt-0.5 text-white font-bold bg-gray-dark rounded-md ">Delete</button>
+            <span v-if="deleteLoading" a class=" absolute left-9  top-6 animate-spin text-9xl inline-block w-8 h-8 border-[3px] border-current border-t-transparent  text-yellow-bright rounded-full" role="status" aria-label="loading"></span>
+            
+            <BasePopup v-if="showDeleteDialog">
+                <div class=" w-96 rounded-md bg-gray-dark absolute">
+                    <div class=" relative">
+                        <h3 class="rounded-md  text-2xl bg-primary4 p-4 text-center text-white font-bold">Delete Movie</h3>
+                        <p class=" absolute top-4 right-0 px-4" @click="showDeleteDialog = false"> <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            class="text-yellow-bright cursor-pointer"
+                            viewBox="0 0 1024 1024"
+                        >
+                            <path
+                            fill="currentColor"
+                            d="m563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8L295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512L196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1l216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
+                            />
+                            </svg>
+                        </p>
+                    </div>
+                    
+                    <p class=" px-4 py-6 text-white text-10">Are you sure you want to delete this movie?
+                        if you sure change status of movie to closed and then delete it
                     </p>
+                    <div class=" flex justify-between">
+
+                        <p class=" text-white px-4 ">Title: {{ movie.title }}</p>
+                        
+                    </div>
+                    <div class="rounded-md  text-center">
+                        <button @click="deleteMovie" class=" w-full bg-yellow-bright py-4 text-white font-bold">Delete</button>
+                    </div>
                 </div>
-            <div class="movie-poster hover:opacity-20 ">
-                <NuxtLink :to="detailLink">
-                    <img class=" w-full h-full object-cover" :src="imgUrl" alt="Cover Image">
-                </NuxtLink>
-            </div>
-            <div class="py-6 relative space-y-4">
-                <div class=" flex justify-between">
-                    <h5 class="title text-white font-bold"><NuxtLink :to="detailLink">{{props.movie.title}}</NuxtLink></h5>
-                    <span class=" text-yellow-bright">{{ date }}</span>
-                </div>
-                <div >
-                    <ul class="flex justify-between">
-                        <li><span class="border-4 px-2 border-solid border-white text-yellow-bright">hd</span></li>
-                        <li class=" ">
-                            
-                            <span class="text-primary5">
-                                <svg xmlns="http://www.w3.org/2000/svg" 
-                                    width="20"
-                                    height="20"
-                                    class="text-yellow-bright cursor-pointer inline"
-                                    viewBox="0 0 24 24">
-                                    <path
-                                        fill="currentColor"
-                                        d="M12 20C16.4 20 20 16.4 20 12S16.4 4 12 4 4 7.6 4 12 7.6 20 12 20M12 2C17.5 2 22 6.5 22 12S17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M12.5 12.8L7.7 15.6L7 14.2L11 11.9V7H12.5V12.8Z"
-                                    />
-                                </svg>
-                                {{ props.movie.duration }} min
-                            </span>
-                            <span class=" text-primary5">
-                                <svg xmlns="http://www.w3.org/2000/svg" 
-                                    width="20"
-                                    height="20"
-                                    class="text-yellow-bright cursor-pointer inline"
-                                    viewBox="0 0 24 24">
-                                    <path
-                                        fill="currentColor"
-                                        d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
-                                    />
-                                </svg>
-                                {{ rating }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div> 
+            </BasePopup>
+        </td>
+    </tr>
 </template>
 <style scoped>
-.movie-poster{
-    height: 380px;
+td{
+    padding: 1.5rem;
+    text-align: left;
+    /* border-bottom: 0.1px solid rgb(236, 234, 234); */
+}
+
+.active{
+    display: block;
+    color: green;
+    /* background-color: #0bf50f; */
+    width: 6rem;
+
+}
+.pending{
+    width: 6rem;
+    display: block;
+    color: yellow;
+    /* background-color: rgb(255, 200, 0); */
+}
+.closed{
+    display: block;
+    color: red;
+    width: 6rem;
+
+    /* background-color: #b91024; */
 }
 </style>
-

@@ -2,35 +2,48 @@
 import { computed } from "vue";
 import {useStore} from "@/stores/index";
 const store = useStore();
+const router = useRouter()
 
 
+
+
+const props = defineProps({
+    name: null,
+    resultMessage: ''
+})
 function adminSearch(event){
+    console.log('searching for ' + event.target.value)
+    store.setAdminSearchType(props.name)
     store.setAdminSearch(event.target.value)
 }
-const props = defineProps({
-    name: null
-})
 
 const placeholder = computed(()=>{
     return `search ${props.name}`
 })
 
+const emit = defineEmits(['refresh'])
+const refresh = () => {
+    emit('refresh')
+}
+
+
 </script>
 
 <template>
     <div>
-        <div class=" flex justify-between items-center">
+        <div class=" flex justify-between ">
             <!-- left -->
             <div>
                 <!-- <h3 class=" text-2xl font-bold text-primary6">Admin/{{name}}</h3> -->
                 <h3 class=" uppercase text-2xl font-bold text-primary9">{{name}} List</h3>
-
+                <p  class=" text-primary9 font-bold">{{ resultMessage }}</p>
             </div>
             <!-- right -->
             <div class=" pb-8">
-                <input @input="adminSearch" type="text" @focus="movePlaceholder"
+                <span @click="refresh" class=" cursor-pointer px-4 text-primary9 font-bold">All {{name}}</span>
+                <input pattern="[a-zA-Z0-9]+" @input="adminSearch" type="text" 
                     :placeholder="placeholder"
-                    class="py-3 px-12  border-2 border-solid border-yellow-bright text-primary4   bg-gray-dark focus:bg-primary10    rounded-md"
+                    class="py-2 px-2   border-2 border-solid border-yellow-bright text-primary4   bg-gray-dark focus:bg-primary10    rounded-md"
                 >
             </div>
         </div>

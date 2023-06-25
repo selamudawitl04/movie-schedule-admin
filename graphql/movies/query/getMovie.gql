@@ -11,11 +11,13 @@ query MyQuery($id : uuid!) {
       }
     }
     cover_image
+    director_id
 
     title
     discrption
     duration
     id
+    status
     image {
       id
       url
@@ -45,6 +47,15 @@ query MyQuery($id : uuid!) {
     },
     tickets{
       seat_number
+      user{
+        id
+        firstName
+        lastName
+        email
+      }
+      date
+      price
+      user_id
     }
     ratings_aggregate {
       aggregate {

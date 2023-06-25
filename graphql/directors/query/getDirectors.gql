@@ -1,11 +1,16 @@
-query getDirectors {
-  directors {
+query getDirectors($query: directors_bool_exp!) {
+  directors(where: $query){
     first_name
     id
     last_name
     image {
       id
       url
+    }
+    movies_aggregate {
+      aggregate {
+        count
+      }
     }
   }
 }

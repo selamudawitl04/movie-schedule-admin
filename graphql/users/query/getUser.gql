@@ -1,0 +1,24 @@
+query getUser($id:uuid!) {
+  users_by_pk(id: $id) {
+    email
+    firstName
+    id
+    image {
+      id
+      url
+    }
+    lastName
+    tickets(order_by: {seat_number: asc})  {
+      date
+      id
+      movie {
+        date
+        duration
+        id
+        title
+      }
+      price
+      seat_number
+    }
+  }
+}

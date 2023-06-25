@@ -1,10 +1,11 @@
 import {useAuthStore} from "@/stores/modules/auth"
 export default defineNuxtRouteMiddleware((to, from , next) => {
     const authStore = useAuthStore()
-    if (authStore.isLoggedIn && authStore.user.role === 'admin') {
+    authStore.autoLogin()
+    if (authStore.isLoggedIn) {
         return
     }
     else {
-        return navigateTo('/')
+        return navigateTo('/auth/login')
     }
   })

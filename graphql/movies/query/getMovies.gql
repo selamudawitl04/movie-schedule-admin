@@ -1,6 +1,7 @@
-query getMovies {
-  movies {
+query getMovies($query: movies_bool_exp) {
+  movies(where: $query) {
     date
+    director_id
     director {
       first_name
       id
@@ -21,6 +22,13 @@ query getMovies {
     movies_generes {
       genere {
         name
+        id
+      }
+    }
+    movies_actors {
+      actor {
+        first_name
+        last_name
         id
       }
     }

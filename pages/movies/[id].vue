@@ -1,80 +1,52 @@
 <script setup>
-definePageMeta({
-  layout: "movies",
-});
-const id = useRoute().params.id;
 
-// fetch movies
 import getMovie from '@/graphql/movies/query/getMovie.gql'
-const { onResult, loading, onError, refetch } = useQuery(getMovie, {id})
-let movie = ref()
+import query from '@/composables/query.js'
+definePageMeta({
+  layout: "adminpanel",
+  middleware: ["admin"],
+
+});
+
+const router = useRouter()
+const route = useRoute()
+const id = route.params.id
+
+const movie = ref(null)
 const serverError = reactive({
     error: false,
     message: ''
 })
+
+
+
+// fetch movies
+const { onResult, loading:movieLoading, onError:movieError, refetch } = query(getMovie,  {id})
 onResult((result) => {
-    movie.value = {
-        ...result.data.movies_by_pk
-    }
-    console.log(movie.value)
+    console.log('Here movie Date come', result)
+  movie.value = {
+    ...result.data.movies_by_pk
+  }
 })
-onError((error) => {
+movieError((error) => {
     serverError.error = true
     serverError.message = error.message
     console.log(error)
-})
+});
 
+
+
+const headers = ['Seat Number','FirstName', 'LastName','Email', 'Price', 'Date']
+
+// 1.Ui
+// 2.Table
+// 3.Available sits
+// 1. Seat Number first name lastname email price date
 </script>
-
 <template>
-     <BaseDialog :show="serverError.error" :title="serverError.message" @close="serverError.error =false">
-        Please check your internet connection and try again
-    </BaseDialog>
-    <BasePopup v-if="loading">
-        <div class=" fixed z-50 top-48 ">
-            <img   src="@/assets/img/preloader.svg" alt="">
-        </div>
-    </BasePopup>
-    <div class="app">
-        <main>
-            <!-- Section 1 Movie Detail -->
-            <section  id="detail-header-container"  class=" mt-20 pt-20 pb-40 bg-no-repeat bg-right  md:bg-center  bg-cover" >
-                <div v-if="!loading && !serverError.error" class="container p-4 mx-auto">
-                    <MoviesDetailsDetail :movie="movie"></MoviesDetailsDetail>
-                </div>
-            </section>
-            <!-- Directors and Actors Container -->
-            <section id="second-section" class="director-casts bg-cover bg-primary3 pt-20 pb-20">
-                <div  v-if="!loading && !serverError.error" class=" container mx-auto p-4">
-                    <h3 class=" text-white text-2xl text-center my-6 font-bold">Directors and Casts</h3>
-                    <div class=" justify-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        <DirectorsItem :director="movie.director"></DirectorsItem>
-                        <ActorsItem v-for="movie_actor in movie.movies_actors " 
-                            :key="movie_actor.actor.id" :actor="movie_actor.actor"/>
-                    </div>
-                </div>
-            </section>
-            <!-- New Container -->
-            <MoviesDetailsRegister></MoviesDetailsRegister>
-        </main>
-    </div>
-  </template>
+    <BaseDialog :show="!!serverError.error" title="Some thing went wrong" @close="serverError.error = false"></BaseDialog>
+    <BaseSpinner v-if="movieLoading" ></BaseSpinner>
+    <MoviesDetail v-if="movie && !movieLoading" :movie="movie"></MoviesDetail>
+</template>
 
-<style scoped>
-  #detail-header-container{
-      background-image: url(../../assets/img/movie_details_bg.jpg);
-  }
-  #body-container{
-      background-image: url(../../assets/img/ucm_bg.jpg);
-  }
-    .director-casts{
-        background-image: url(../../assets/img/ucm_bg_shape.png);
-    }
-    .newsletter{
-        background-image: url(../../assets/img/newsletter_bg.jpg);
-    }
-    #detail-header-container{
-      background-image: url(../../assets/img/movie_details_bg.jpg);
-  }
 
-</style>

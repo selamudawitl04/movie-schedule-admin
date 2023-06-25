@@ -1,0 +1,6 @@
+mutation deleteContacts($id: uuid!){
+    delete_contacts_by_pk(id: $id){
+        id
+        subject
+    }
+}

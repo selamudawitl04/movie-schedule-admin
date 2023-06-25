@@ -1,7 +1,0 @@
-mutation signup($data:signupInput!) {
-  signup(arg1: $data) {
-    id
-    token
-    role
-  }
-}

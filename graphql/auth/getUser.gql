@@ -14,8 +14,7 @@ query getUser($id:uuid!) {
       movie {
         id
         title
-        image {
-          url
+        image {          url
         }
       }
     }

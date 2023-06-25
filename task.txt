@@ -1,16 +1,29 @@
-5. Reset Password
-8. Pagination
-9. Protecting image upload in backend
-3. Detail Page Image Animation  If I have time to shoe
 
 
-1. triger, computed property
-1. Movie Status triger Must
-Update User Date
 
-1. Form and Date 
-2. Query 
-3. Excute
+2. Reply Message
+7. System Checking
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

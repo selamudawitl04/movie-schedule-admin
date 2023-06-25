@@ -40,7 +40,7 @@
     text-decoration: none;
     padding: 0.5rem 1rem;
     font: inherit;
-    background-color: #FF7555;
+    background-color: #E4D804;
     color: white;
     /* color: #DAD7DA; */
   
@@ -60,9 +60,7 @@
   }
   
   .auth {
-    /* background-color: transparent; */
-    /* color: #3a0061; */
-    /* border: none; */
+   
     margin: .5rem auto;
     opacity: 0.8;
   }
@@ -76,7 +74,7 @@
   .flat:active,
   .card:hover,
   .card:active {
-    background-color: #FF7555;
+    background-color: #E4D804;
     color: white;
   
   }

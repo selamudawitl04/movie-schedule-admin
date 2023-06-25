@@ -14,7 +14,9 @@ function getDate(date){
 
 <template>
     <div class="  flex justify-center  items-start mb-6 mr-3" >
-        <img class=" block h-40 w-40 cover"  :src="ticket.movie.image.url" :alt="ticket.movie.title">
+        <NuxtLink  class=" block" :to="`/movies/${ticket.movie.id}`">
+            <img class=" block h-40 w-40 cover"  :src="ticket.movie.image.url" :alt="ticket.movie.title">
+        </NuxtLink>
         <div class=" w-60  " >
             <div class=" py-5 px-2 bg-gray-dark text-white">
                 <h1 class=" ">Title: {{ ticket.movie.title }}</h1>

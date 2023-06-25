@@ -1,0 +1,17 @@
+query getUsers($query:users_bool_exp ) {
+  users(where: $query,order_by: {tickets_aggregate: {count: desc}}) {
+    email
+    firstName
+    id
+    image {
+      id
+      url
+    }
+    lastName
+    tickets_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+}

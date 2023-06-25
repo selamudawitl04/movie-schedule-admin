@@ -1,7 +1,0 @@
-mutation MyMutation($data: ratings_insert_input!) {
-  insert_ratings_one(object: $data) {
-    user{
-      firstName
-    }
-  }
-}

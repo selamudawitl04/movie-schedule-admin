@@ -1,29 +1,32 @@
 <script setup>
-// graphql queris to fetch data
-import getMovies from '@/graphql/movies/query/getMovies.gql'
-import keyWordSearch from '@/graphql/movies/query/keyWordSearch.gql'
-import searchByDirector from '@/graphql/movies/query/searchByDirector.gql'
-import filterMovieByGenere from '@/graphql/movies/query/filterMovieByGenere.gql'
-
-
+import { ref } from "vue";
+import {useStore} from "@/stores/index";
 import query from '@/composables/query.js'
-import {useStore} from "~/stores/index"
-const store  = useStore()
+import getMovies from '@/graphql/movies/query/getMovies.gql'
+import deleteMovieMutation from '@/graphql/movies/mutation/deleteMovie.gql'
+definePageMeta({
+  layout: "adminpanel",
+  middleware: ["admin"],
+});
 
-// function to assgin movie result 
+const store = useStore();
+let isloading = ref(false);
+const resultMeassage = ref('')
 let movies = ref([])
-let isloading = ref(false)
+const serverError = reactive({
+    error: false,
+    message: ''
+})
 
+
+// fetch movies
+// const { onResult, loading, onError, refetch } = query(getMovies, 'admin', {})
 function setMovies(result){
     movies.value = []
     result.data.movies.forEach(movie => {
-        if(movie.status == 'active'){
-            movies.value.push(movie)
-        }
+        movies.value.push(movie)
     });
-    // console.log(movies.value)
 }
-
 // function to set Error 
 function setError(error){
     serverError.error = true
@@ -34,151 +37,168 @@ function setError(error){
 function refresh(){
     let { onResult, loading, onError, refetch } = query(getMovies, {})
     isloading = loading
-    onResult((result) => { setMovies(result)})
+    onResult((result) => { 
+        setMovies(result)
+        resultMeassage.value = ''
+    })
     onError((error) => {setError(error) })
 }
 
-// check if searching and filtering are seted else load all movies
-if(store.getDirectorSearch != ''){
-    console.log('There is director search')
-    searchMovieByDirector(store.getDirectorSearch)
-}else if(store.getFilterByGenere != ''){
-    console.log('There is genere search')
+// if there is refresh is clicked
+const getRefresh = () => {
+  return store.getRefresh;
+};
 
-    filterByGenere(store.getFilterByGenere)
+watch(getRefresh, (newValue, oldValue) => {
+    if(newValue){
+        console.log('There is refresh from refresh search')
+        refresh()
+        store.setRefresh(false)
+    }
+})
+
+if(store.getAdminSearch != '' && store.getAdminSearchType == 'movies'){
+    adminSearch(store.getAdminSearch)
+    store.setAdminSearch('')
 }
+if(store.getDirectorSearch != ''){
+    directorSearch(store.getDirectorSearch)
+    store.setDirectorSearch('')
+}
+else if(store.getActorSearch != ''){
+    actorSearch(store.getActorSearch)
+    store.setActorSearch('')
+}
+
 else{
     console.log('There is refresh search')
     refresh()
 }
-const serverError = reactive({
-    error: false,
-    message: ''
+
+// watch if there is a search
+const getAdminSearch = () => {
+  return store.getAdminSearch;
+};
+watch(getAdminSearch, (newValue, oldValue) => {
+    adminSearch(newValue)
 })
 
-
-
-// Serach by keyWord
-const getKeyWord = ()=>{
-    return store.getKeySearch
-}
-watch(getKeyWord, (newValue, oldValue) => {
-    const search = {
-        title: `%${newValue}%`,
-        discrption: `%${newValue}%`
+// if there is movie search by director
+function directorSearch(id){
+    const variables = {
+        query: {
+            director_id: {
+                _eq: id
+            }
+        }
     }
-    let { onResult, loading, onError, refetch } = query(keyWordSearch, search)
+    let { onResult, loading, onError, refetch } = query(getMovies, variables)
     isloading = loading
-    onResult((result) => { setMovies(result)})
+    onResult((result) => { 
+        setMovies(result)
+        if(movies.value.length > 0){
+            resultMeassage.value = `Movies directed by ${movies.value[0].director.first_name} ${movies.value[0].director.last_name}`
+        }else{
+            console.log('thwew cfgjhjnkl')
+        }
+    })
     onError((error) => {setError(error) })
-
-})
-
-function searchMovieByDirector(newValue){
-    let first_name = newValue;
-    let last_name = newValue
-
-    if(newValue.split(' ').length > 1){
-        first_name = newValue.split(' ')[0]
-        last_name = newValue.split(' ')[1]
+}
+// if there is movie search by actor
+function actorSearch(id){
+    const variables = {
+        query: {
+            movies_actors: {
+                actor_id: {
+                    _eq: id
+                }
+            }
+        }
     }
-    
-    const search = {
-        first_name: `%${first_name}%`,
-        last_name: `%${last_name}%`
-    }
-    console.log(search)
-    let { onResult, loading, onError, refetch } = query(searchByDirector, search)
+    let { onResult, loading, onError, refetch } = query(getMovies, variables)
     isloading = loading
-    onResult((result) => { setMovies(result)})
-    onError((error) => {setError(error);  })
+    onResult((result) => { 
+        setMovies(result)
+        if(movies.value.length > 0){
+            const movie_actor = movies.value[0].movies_actors.find(movie_actor=> movie_actor.actor.id == id)
+            resultMeassage.value = `Movies cast by ${movie_actor.actor.first_name } ${movie_actor.actor.last_name}`
+        }
+    })
 }
-
-// Search by Directore
-const getDirectorSearch = ()=>{
-    return store.getDirectorSearch
-}
-
-function setDirectorSearch(event){
-    store.setDirectorSearch(event.target.value)
-}
-
-function getFilterByGenere(){
-    return store.getFilterByGenere
-}
-
-
-watch(getFilterByGenere, (newValue, oldValue) => {
-    filterByGenere(newValue)
-})
-watch(getDirectorSearch, (newValue, oldValue) => {
-    searchMovieByDirector(newValue)
-})
-// filter movie by genere
-
-function filterByGenere(genere){
-    console.log('Search by genere is called ', genere)
-    const search = {
-        genere: `%${genere}%`
+function adminSearch(word){
+    const variables = {
+        query: {
+            _or: [{
+                    title: {
+                    _ilike: `%${word}%`
+                    }
+                },
+                {
+                    discrption:  {
+                    _ilike: `%${word}%`
+                    }
+                }
+            ]
+        }
     }
-    let { onResult, loading, onError, refetch } = query(filterMovieByGenere, search)
+    let { onResult, loading, onError, refetch } = query(getMovies, variables)
     isloading = loading
-    onResult((result) => { setMovies(result)})
-    onError((error) => {setError(error);  })
+    onResult((result) => { 
+        setMovies(result)
+        resultMeassage.value = `Result for: ${word} `
+    })
+    onError((error) => {setError(error) })
 }
 
+// delete movie
+function deleteMovie(id){
+    // console.log('movie is deleted succefully')
+    const {mutate, onDone, loading, onError } = mutation(deleteMovieMutation);
+    // to delete movie-images, movie-actors, movie-generes
+    const variables = {
+        id,
+        filter1:{
+            movie_id: {
+                 _eq: id
+            }
+        },
+        filter2:{
+            movie_id: {
+                 _eq: id
+            }
+        },
+        filter3:{
+            movie_id: {
+                 _eq: id
+            }
+        },
+    }
+    mutate(variables)
+    onDone((result) => {
+        console.log('movie is deleted succefully')
+        movies.value = movies.value.filter(movie => movie.id != id)
+    });
+    onError((error) => {
+        console.log(error)
+        setError(error)
+    });
+}
 
-definePageMeta({
-    layout: "movies",
-});
-
+const headers = ['Title', 'Date','Duration', 'Status', 'Update', 'Delete']
 </script>
 <template>
-
-    <div class="app">
-        <!-- Body Header -->
-        <MoviesHeader/>
-        <!-- Movies Body -->
-        <section  id="body-container"  class=" z-10  relative  py-40   bg-no-repeat bg-center  bg-cover ">
-        <!-- Back ground Image -->
-            <div  id="inner-bg" class=" z-20 opacity-95  bg-primary3 absolute top-0 left-0 right-0 bg-no-repeat bg-center  bg-cover  h-full  w-full" >
-            </div>
-            <BaseDialog :show="!!serverError.error" :title="serverError.message" @close="serverError.error =false">
-                Please check your internet connection and try again
-            </BaseDialog>
-            <BasePopup v-if="isloading">
-                <div class=" fixed z-50 top-48 ">
-                    <img   src="@/assets/img/preloader.svg" alt="">
-                </div>
-            </BasePopup>
-            <!-- <BaseSpinner v-if="isloading"></BaseSpinner> -->
-           
-            <!-- Search Movie by director and Header -->
-            <div id="movieslist" v-if="!serverError.error"  class=" px-4 flex flex-col justify-center items-center z-50  lg:flex-row lg:justify-between relative container mx-auto">
-                <div>
-                    <h3  @click="refresh" class="text-4xl font-bold cursor-pointer text-white py-8">This Week Movies</h3>
-                </div>
-                <div class=" pb-8">
-                    <input @input="setDirectorSearch" placeholder="search by director" class="py-3 px-12  border-4 border-solid border-yellow-bright   bg-gray-dark focus:bg-white    rounded-full">
-                </div>
-            </div>
-            <!-- Movie List Container -->
-            <div  v-if="!isloading && !serverError.error" class="container mx-auto z-50 px-4  relative">
-                <MoviesList :movies="movies"/>
-                <!-- <MoviesList :movies="movies"/> -->
-            </div> 
-        </section>
-        <OthersAdvert></OthersAdvert>
-
+    <!-- Table Container -->
+    <BaseDialog :show="!!serverError.error" :title="serverError.message" @close="serverError.error = false">
+        Please check your internet connection and try again
+    </BaseDialog>
+    <BaseSpinner v-if="isloading"></BaseSpinner>
+    <div  >
+        <LayoutSubHeader @refresh="refresh" :resultMessage="resultMeassage" name="Movies"></LayoutSubHeader>
+        <BaseTable v-if=" movies.length > 0" :headers="headers">
+            <MoviesItem   @delete-movie="deleteMovie"  v-for="movie in movies" :key="movie.id" :movieData="movie"/>
+        </BaseTable>   
+        <div v-if="movies.length == 0 && !isloading" class=" bg-gray-dark p-6 text-center text-white font-bold">
+            <p>No Movies Found</p>
+        </div>     
     </div>
 </template>
-
-  <style scoped>
-  
-  #body-container{
-      background-image: url(../assets/img/ucm_bg.jpg);
-  }
-  #inner-bg{
-    background-image: url(../assets/img/ucm_bg_shape.png);
-  }
-  </style>

@@ -1,5 +1,5 @@
-
-export default function (mutation, role) {
+// for authentcated user
+export default function (mutation) {
     const { mutate, onDone, loading, onError } = useMutation(
       mutation,
       () => ({
@@ -7,7 +7,7 @@ export default function (mutation, role) {
         clientId: "authClient",
         context: {
           headers: {
-            "x-hasura-role": role,
+            "x-hasura-role": 'admin',
           }
         }
       })
