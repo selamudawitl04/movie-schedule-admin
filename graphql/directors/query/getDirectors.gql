@@ -7,10 +7,7 @@ query getDirectors($query: directors_bool_exp!) {
       id
       url
     }
-    movies_aggregate {
-      aggregate {
-        count
-      }
-    }
+    no_of_movie
+
   }
 }

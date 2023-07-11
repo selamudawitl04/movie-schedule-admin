@@ -254,6 +254,11 @@ function editWithReason(){
     });
 }
 
+function cancelChange(){
+  displayForm.value = false
+  refetch()
+}
+
 
 
 </script>
@@ -264,7 +269,7 @@ function editWithReason(){
       <Form @submit="handleEditMovie" class="w-3/4 relative"  :validation-schema="schema" v-slot="{ errors }">   
         <p v-if="error" class="text-red text-center bottom-0 absolute text-sm">{{ errorMessage }}</p>
         <h1 class="text-center text-3xl  font-bold text-primary9 py-10 uppercase">Edit  Movie</h1>
-        <NuxtLink :to="'/movies/' + movieData.id" class="  text-gray-dark py-4 font-bold">back</NuxtLink>
+        <NuxtLink :to="'/'" class="  text-gray-dark py-4 font-bold">back</NuxtLink>
             <div class=" flex flex-col items-center  b w-full justify-start space-y-10">
                 <div class=" grid grid-cols-2 gap-6 w-full">
                     <!-- title -->
@@ -304,21 +309,23 @@ function editWithReason(){
                         <textarea required minlength="20" maxlength="1000" v-model="movieData.discrption"  class="border-2 p-2 border-gray rounded-md" name="" id="" cols="27" rows="3"></textarea>
                     </div> 
             </div>
-            <button :disabled="loading" class=" bg-opacity-60 hover:bg-opacity-100 font-bold text-white bg-yellow-bright  w-80 my-10 mx-auto block rounded-full p-2">Submit</button>
+            <button :disabled="loading" class=" hover:bg-opacity-100 font-bold text-primary9 bg-yellow-bright  w-80 my-10 mx-auto block rounded-full p-2">submit</button>
       </Form>
       <div v-if="displayForm" class=" fixed  top-20  z-50 bg-white border border-gray-light rounded-md p-2 shadow-xl w-96">
         <div class=" flex justify-between">
           <label class=" bg-opacity-80 font-bold bg-gray-dark text-white p-2 mb-4 rounded-md" for="message">The movie date is changed please write reason below</label>
         </div>
         <form @submit.prevent="editWithReason" action="">
-          <textarea v-model="message" required class="border border-gray text-primary9 rounded-md p-2" name="message" id="message" placeholder="write the reason  here..." cols="41" rows="4"></textarea>
-          <div class="flex items-center space-x-10">
+          <textarea v-model="message" required class="border border-gray text-primary9 rounded-md p-2" name="message" id="message" placeholder="write the reason  here..." cols="36" rows="4"></textarea>
+          <div class="flex items-center justify-between">
 
-            <div  class=" relative  w-32 p-2 text-center text-white font-bold rounded-lg bg-yellow-bright">
-              <button  class="text-center ">Enter</button>
+            <div  class=" relative  w-32 p-2 text-center text-primary9 font-bold rounded-lg bg-yellow-bright">
+              <button  class="text-center ">enter</button>
             </div>
-            <NuxtLink :to="'/movies/' + movieData.id" class=" text-primary9 font-bold">cancel change</NuxtLink >
-           
+            <div  class=" relative  w-32 p-2 text-center text-primary9 font-bold rounded-lg bg-yellow-bright">
+              <button  @click="cancelChange" type="button" class="text-center ">cancel change</button>
+              
+            </div>
           </div>
         </form>
       </div> 

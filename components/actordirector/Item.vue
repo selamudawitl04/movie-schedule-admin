@@ -20,15 +20,7 @@ const props = defineProps({
 
 const imgUrl = computed(() => props.item.image.url)
 const editPageLink = computed(() => props.type + '/'+ props.item.id)
-const numberOfMovies = computed(() =>{
-    if(props.type == 'actors'){
-        return props?.item?.movies_actors_aggregate?.aggregate?.count
-    }
-    else{
-        return props?.item?.movies_aggregate?.aggregate?.count
-    }
-    
-})
+
       
 // this function is used to set the search value in the store
 function setSearch(){
@@ -42,10 +34,8 @@ function setSearch(){
 
 const deleteActorOrDirector = inject('deleteActorOrDirector')
 const deleteItem = () => {
-    if(numberOfMovies == 0){
-        return
-    }
-    deleteActorOrDirector(props.item.id, numberOfMovies.value)
+    console.log(props.item.no_of_movie, 'number of movies')
+    deleteActorOrDirector(props.item.id, props.item.no_of_movie)
 }
 </script>
 <template>
@@ -55,7 +45,7 @@ const deleteItem = () => {
            {{ item.first_name}}
         </td>
         <td class=" text-primary9 font-bold">{{ item.last_name }}</td>
-        <td @click="setSearch"  class=" text-gray-dark cursor-pointer  pl-5  font-bold">{{ numberOfMovies }} movies</td>
+        <td @click="setSearch"  class=" text-gray-dark cursor-pointer  pl-5  font-bold">{{ item.no_of_movie || 0 }} movies</td>
         <td class=" relative text-right" >
             <div class=" absolute left-5 top-6 px-4 text-center   text-white font-bold bg-gray-dark rounded-md ">
                 <NuxtLink :to="editPageLink" class=" ">Edit</NuxtLink>

@@ -1,0 +1,13 @@
+mutation sendMessage($data: messageInput!, $data1: faqs_insert_input!) {
+  sendMessage(arg1: $data){
+    message
+  }
+  insert_faqs_one(object: $data1) {
+    id
+    question
+    answer
+    date
+  }
+}
+
+

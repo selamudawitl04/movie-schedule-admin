@@ -1,0 +1,8 @@
+mutation addToFAQ($data: faqs_insert_input!) {
+    insert_faqs_one(object: $data) {
+        id
+        question
+        answer
+        date
+  }
+}

@@ -31,12 +31,22 @@ const refresh = () => {
 
 <template>
     <div>
-        <div class=" flex justify-between ">
+        <div class=" flex justify-between  items-start">
             <!-- left -->
             <div>
                 <!-- <h3 class=" text-2xl font-bold text-primary6">Admin/{{name}}</h3> -->
                 <h3 class=" uppercase text-2xl font-bold text-primary9">{{name}} List</h3>
-                <p  class=" text-primary9 font-bold">{{ resultMessage }}</p>
+                <p style="max-width: 8rem;"  class=" text-primary9 font-bold">{{ resultMessage }}</p>
+            </div>
+            <div class=" border border-yellow-bright bg-opacity-80 rounded-md  bg-gray-dark">
+                <slot name="pagination"></slot>
+            </div>
+           
+            <div class=" border border-yellow-bright bg-opacity-80 rounded-md  bg-gray-dark">
+                <slot name="status"></slot>
+            </div>
+            <div class=" border border-yellow-bright bg-opacity-80 rounded-md  bg-gray-dark">
+                <slot name="sort"></slot>
             </div>
             <!-- right -->
             <div class=" pb-8">

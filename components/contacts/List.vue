@@ -8,7 +8,7 @@ const props = defineProps({
 
 </script>
 <template>
-    <div class="">
+    <div class=" grid grid-cols-1">
         <ContactsItem v-for="contact in contacts "
             :key="contact.id" :contact="contact">
         </ContactsItem>

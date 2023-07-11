@@ -1,5 +1,5 @@
-query getContacts {
-  contacts {
+subscription getContacts {
+  contacts(distinct_on: id) {
     body
     email
     id

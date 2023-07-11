@@ -1,5 +1,5 @@
-query getMovies($query: movies_bool_exp) {
-  movies(where: $query) {
+query getMovies($query: movies_bool_exp, $limit: Int, $offset: Int, $order_by: [movies_order_by!]) {
+  movies(where: $query, limit: $limit, offset: $offset, order_by: $order_by) {
     date
     director_id
     director {
@@ -32,12 +32,6 @@ query getMovies($query: movies_bool_exp) {
         id
       }
     }
-    ratings_aggregate {
-      aggregate {
-        avg {
-          rating
-        }
-      }
-    }
+    rating_average
   }
 }

@@ -158,7 +158,7 @@ td{
 .pending{
     width: 6rem;
     display: block;
-    color: yellow;
+    color: blue;
     /* background-color: rgb(255, 200, 0); */
 }
 .closed{

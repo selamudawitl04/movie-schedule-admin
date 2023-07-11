@@ -84,7 +84,7 @@ const handleImage = async () => {
   </div>
   <div v-if="base64Images.length > 0" class="w-full mb-10">
     <div class="w-full flex justify-center">
-      <span class="font-bold">Click image to make it Tumnail</span>
+      <span class="font-bold">Click image to make it Cover</span>
     </div>
     <div class="md:grid md:grid-cols-3">
       <div class="m-2" v-for="(path, index) in base64Images" :key="index">
@@ -119,7 +119,7 @@ const handleImage = async () => {
             v-if="index == 0"
             class="text-md font-bold rounded p-2 text-green-600"
           >
-            Tumnail
+            Cover
           </div>
           <div v-else class="text-md font rounded p-2 text-orange-600">Detail</div>
         </div>

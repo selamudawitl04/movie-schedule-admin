@@ -7,10 +7,6 @@ query getActors($query: actors_bool_exp!) {
       id
       url
     }
-    movies_actors_aggregate {
-      aggregate {
-        count
-      }
-    }
+    no_of_movie
   }
 }

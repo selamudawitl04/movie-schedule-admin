@@ -37,7 +37,7 @@ const date = (dateValue)=>{
             <div class="  p-3 space-y-3 text-white font-bold">
                 <p>Title:<span class=" text-yellow-bright">{{ movie.title }}</span> </p>
                 <p>Date: <span class=" text-yellow-bright">{{ date(movie.date) }}</span></p>
-                <p>Rating: <span class=" text-yellow-bright">{{ movie?.ratings_aggregate?.aggregate?.avg?.rating }}</span> </p>
+                <p>Rating: <span class=" text-yellow-bright">{{ movie.rating_average || 3.5 }}</span> </p>
                 <p >Status: <span class=" lowercase text-yellow-bright">{{ movie.status }}</span> </p>
             </div>
         </div>
