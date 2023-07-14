@@ -21,13 +21,13 @@ export default defineNuxtConfig({
     proxyCookies: true,
     clients: {
       default: {
-        httpEndpoint: process.env.GRAPHQL_ENDPOINT || 'http://localhost:5565/v1/graphql',
+        httpEndpoint: process.env.GRAPHQL_ENDPOINT || 'https://vue-shopping.hasura.app/v1/graphql',
         wsEndpoint: 'ws://localhost:5565/v1/graphql',
        
 
       },
       authClient: {
-        httpEndpoint: process.env.GRAPHQL_ENDPOINT || 'http://localhost:5565/v1/graphql',
+        httpEndpoint: process.env.GRAPHQL_ENDPOINT || 'https://vue-shopping.hasura.app/v1/graphql',
         wsEndpoint: 'ws://localhost:5565/v1/graphql',
         tokenName: 'auth-token',
         inMemoryCacheOptions:{
