@@ -6,11 +6,10 @@
 const router = useRouter();
 const actors = reactive([]);
 
-import query from '@/composables/query.js'
+import query from "@/composables/query.js";
 import getActors from "@/graphql/actors/query/getActors.gql";
 
-
-// for edit page the selected actors are passed as props for add page it is empty array 
+// for edit page the selected actors are passed as props for add page it is empty array
 const props = defineProps({
   selectedActors: {
     type: Array,
@@ -19,12 +18,12 @@ const props = defineProps({
 });
 
 const variables = {
-  query:{
-      first_name:{
-        _neq: ""
-      }
-  }
-}
+  query: {
+    first_name: {
+      _neq: "",
+    },
+  },
+};
 
 //1. load directors
 const { onResult, loading, onError, refetch } = query(getActors, variables);
@@ -79,7 +78,10 @@ const setActorToMovie = (actor) => {
 
 const unselectActor = (actor) => {
   props.selectedActors.splice(
-    props.selectedActors.findIndex((selectedActor) => selectedActor.id == actor.id), 1
+    props.selectedActors.findIndex(
+      (selectedActor) => selectedActor.id == actor.id
+    ),
+    1
   );
   setActor(props.selectedActors);
 };
@@ -106,7 +108,7 @@ const unselectActor = (actor) => {
           v-for="actor in displayedActors"
           :key="actor.id"
           @click="setActorToMovie(actor)"
-          class="hover:bg-gray-dark cursor-pointer hover:text-white text-primary9"
+          class="hover:bg-movie-gray-900 cursor-pointer hover:text-white text-primary9"
         >
           {{ actor.first_name + " " + actor.last_name }}
         </p>
@@ -117,7 +119,7 @@ const unselectActor = (actor) => {
       <div
         v-for="actor in props.selectedActors"
         :key="actor"
-        class="flex  items-center justify-between space-x-2 text-left bg-gray-light rounded-md px-2"
+        class="flex items-center justify-between space-x-2 text-left bg-movie-gray-200 rounded-md px-2"
       >
         <span> {{ actor.first_name + " " + actor.last_name }}</span>
         <span @click="unselectActor(actor)" class="cursor-pointer"
@@ -133,9 +135,9 @@ const unselectActor = (actor) => {
               d="m563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8L295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512L196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1l216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
             />
           </svg>
-          </span>
+        </span>
       </div>
     </div>
-    <!-- <button type="button" @click="showActors" class="  bg-gray-dark p-1 px-3 text-white  rounded-full">Add Actor</button> -->
+    <!-- <button type="button" @click="showActors" class="  bg-movie-gray-900 p-1 px-3 text-white  rounded-full">Add Actor</button> -->
   </div>
 </template>
