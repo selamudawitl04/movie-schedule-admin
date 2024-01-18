@@ -1,0 +1,8 @@
+query getPricing($id: uuid!) {
+  pricingsByPk(id: $id) {
+    title
+    id
+    description
+    price
+  }
+}
