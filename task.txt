@@ -5,3 +5,9 @@ FAQ
 a.creating FAQ table
 b.showing faq using list
 c.adding contact to faq
+
+
+
+1.Create table
+2.Insert pricing information
+3.

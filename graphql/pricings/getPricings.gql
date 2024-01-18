@@ -1,0 +1,8 @@
+query getPricings($query: pricings_bool_exp!) {
+  pricings(where: $query) {
+    title
+    id
+    description
+    price
+  }
+}
